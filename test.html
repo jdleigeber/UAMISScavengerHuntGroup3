@@ -1269,6 +1269,14 @@
             { id: 7, name: "Dining Hall Experience", description: "Visit the main dining hall and meal plan office", location: "Student Union", completed: false }
         ];
 
+        // Shared submissions data for TA interface
+        let submissionsData = [
+            { id: 1, student: "Sarah Mitchell", task: "Library Exploration", submitted: "Oct 12, 2025", status: "pending", photo: true, description: "Found the main library entrance and took photos with team members at the information desk." },
+            { id: 2, student: "James Anderson", task: "Student Center Tour", submitted: "Oct 11, 2025", status: "graded", grade: 95, photo: true, description: "Completed tour of student center, located all key services including dining, bookstore, and student activities office." },
+            { id: 3, student: "Emily Rodriguez", task: "Computer Lab Discovery", submitted: "Oct 10, 2025", status: "needs-revision", photo: false, description: "Located computer lab but photo was unclear and didn't show team members." },
+            { id: 4, student: "Michael Chen", task: "Library Exploration", submitted: "Oct 12, 2025", status: "pending", photo: true, description: "Team photo at library entrance, documented available study spaces and research resources." }
+        ];
+
         const mockMembers = [
             { name: "Sarah Mitchell", role: "Team Lead", initials: "SM" },
             { name: "James Anderson", role: "Member", initials: "JA" },
@@ -1740,6 +1748,24 @@
                         submittedAt: new Date().toISOString()
                     };
                     
+                    // Create new submission for TA interface
+                    const newSubmission = {
+                        id: submissionsData.length + 1,
+                        student: getCurrentUserName(),
+                        task: currentTask.name,
+                        submitted: new Date().toLocaleDateString('en-US', { 
+                            month: 'short', 
+                            day: 'numeric', 
+                            year: 'numeric' 
+                        }),
+                        status: 'pending',
+                        photo: true,
+                        description: `Completed ${currentTask.name} task. ${currentTask.description} Photo submitted: ${selectedFile.name}`
+                    };
+                    
+                    // Add to submissions data
+                    submissionsData.push(newSubmission);
+                    
                     // Update progress display
                     updateProgressDisplay();
                     
@@ -2173,15 +2199,8 @@
         }
 
         function populateSubmissions() {
-            const submissions = [
-                { id: 1, student: "Sarah Mitchell", task: "Library Exploration", submitted: "Oct 12, 2025", status: "pending", photo: true },
-                { id: 2, student: "James Anderson", task: "Student Center Tour", submitted: "Oct 11, 2025", status: "graded", grade: 95, photo: true },
-                { id: 3, student: "Emily Rodriguez", task: "Computer Lab Discovery", submitted: "Oct 10, 2025", status: "needs-revision", photo: false },
-                { id: 4, student: "Michael Chen", task: "Library Exploration", submitted: "Oct 12, 2025", status: "pending", photo: true }
-            ];
-
             const container = document.getElementById('submissionsList');
-            container.innerHTML = submissions.map(sub => `
+            container.innerHTML = submissionsData.map(sub => `
                 <div class="task-card">
                     <div class="flex-between">
                         <div>
@@ -2207,29 +2226,39 @@
         }
 
         function populateGradingQueue() {
-            const queue = [
-                { id: 1, student: "Sarah Mitchell", task: "Library Exploration", submitted: "Oct 12, 2025" },
-                { id: 4, student: "Michael Chen", task: "Library Exploration", submitted: "Oct 12, 2025" }
-            ];
+            // Only show pending submissions in the grading queue
+            const queue = submissionsData.filter(sub => sub.status === 'pending');
 
             const container = document.getElementById('gradingQueue');
+            
+            if (queue.length === 0) {
+                container.innerHTML = `
+                    <div class="card" style="text-align: center; padding: 40px;">
+                        <div style="font-size: 48px; margin-bottom: 16px;">✅</div>
+                        <div style="font-size: 20px; font-weight: 600; color: #10b981; margin-bottom: 8px;">All Caught Up!</div>
+                        <div style="color: #6b7280;">No submissions pending review at this time.</div>
+                    </div>
+                `;
+                return;
+            }
+            
             container.innerHTML = queue.map(item => `
-                <div class="card">
+                <div class="card" id="grading-card-${item.id}">
                     <div class="card-title">${item.student} - ${item.task}</div>
                     <div class="card-subtitle">Submitted: ${item.submitted}</div>
                     <div class="card-content">
                         <div style="margin: 16px 0;">
                             <div style="background: #f8fafc; border-radius: 8px; padding: 20px; text-align: center; color: #6b7280; margin-bottom: 16px;">
-                                📷 Student photo would be displayed here
+                                ${item.photo ? '📷 Student photo would be displayed here' : '❌ No photo submitted'}
                             </div>
                             <div class="form-group">
                                 <label class="form-label">Grade (0-100)</label>
-                                <input type="range" class="grade-slider" min="0" max="100" value="85" oninput="updateGradeDisplay(this, ${item.id})">
+                                <input type="range" class="grade-slider" min="0" max="100" value="85" oninput="updateGradeDisplay(this, ${item.id})" id="slider-${item.id}">
                                 <div style="text-align: center; font-weight: 600; color: #dc2626;" id="grade-${item.id}">85</div>
                             </div>
                             <div class="form-group">
                                 <label class="form-label">Feedback</label>
-                                <textarea class="form-input" rows="3" placeholder="Provide feedback for the student..."></textarea>
+                                <textarea class="form-input" rows="3" placeholder="Provide feedback for the student..." id="feedback-${item.id}"></textarea>
                             </div>
                         </div>
                     </div>
@@ -2254,14 +2283,7 @@
         }
 
         function gradeSubmission(id) {
-            const submissions = [
-                { id: 1, student: "Sarah Mitchell", task: "Library Exploration", submitted: "Oct 12, 2025", status: "pending", photo: true, description: "Found the main library entrance and took photos with team members at the information desk." },
-                { id: 2, student: "James Anderson", task: "Student Center Tour", submitted: "Oct 11, 2025", status: "graded", grade: 95, photo: true, description: "Completed tour of student center, located all key services including dining, bookstore, and student activities office." },
-                { id: 3, student: "Emily Rodriguez", task: "Computer Lab Discovery", submitted: "Oct 10, 2025", status: "needs-revision", photo: false, description: "Located computer lab but photo was unclear and didn't show team members." },
-                { id: 4, student: "Michael Chen", task: "Library Exploration", submitted: "Oct 12, 2025", status: "pending", photo: true, description: "Team photo at library entrance, documented available study spaces and research resources." }
-            ];
-            
-            currentGradingSubmission = submissions.find(sub => sub.id === id);
+            currentGradingSubmission = submissionsData.find(sub => sub.id === id);
             if (!currentGradingSubmission) return;
             
             // Populate submission details
@@ -2581,12 +2603,48 @@
         }
 
         function requestRevision(id) {
-            showToast('Revision request sent to student', 'info');
+            const submission = submissionsData.find(sub => sub.id === id);
+            if (submission) {
+                const feedback = document.getElementById(`feedback-${id}`).value.trim();
+                if (!feedback) {
+                    showToast('Please provide feedback for the revision request', 'error');
+                    return;
+                }
+                
+                submission.status = 'needs-revision';
+                submission.feedback = feedback;
+                submission.reviewedAt = new Date().toISOString();
+                
+                // Refresh both views
+                populateSubmissions();
+                populateGradingQueue();
+                
+                showToast(`Revision requested for ${submission.student}`, 'info');
+            }
         }
 
         function submitGrade(id) {
-            const grade = document.querySelector(`#grade-${id}`).textContent;
-            showToast(`Grade ${grade} submitted successfully!`, 'success');
+            const submission = submissionsData.find(sub => sub.id === id);
+            if (submission) {
+                const grade = parseInt(document.querySelector(`#grade-${id}`).textContent);
+                const feedback = document.getElementById(`feedback-${id}`).value.trim();
+                
+                if (!feedback) {
+                    showToast('Please provide feedback for the student', 'error');
+                    return;
+                }
+                
+                submission.status = 'graded';
+                submission.grade = grade;
+                submission.feedback = feedback;
+                submission.gradedAt = new Date().toISOString();
+                
+                // Refresh both views
+                populateSubmissions();
+                populateGradingQueue();
+                
+                showToast(`Grade ${grade} submitted for ${submission.student}!`, 'success');
+            }
         }
 
         // Map and Directions Functions
@@ -3001,5 +3059,5 @@
         // Initialize
         document.addEventListener('DOMContentLoaded', initApp);
     </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99a98ce2236f41c4',t:'MTc2MjQ4NDExMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99aea1ecd20353bc',t:'MTc2MjUzNzQwMi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
