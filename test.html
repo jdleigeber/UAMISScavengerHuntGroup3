@@ -1,0 +1,2636 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MIS Scavenger Hunt</title>
+  <style>
+        body {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            min-height: 100%;
+            color: #333;
+        }
+
+        html {
+            height: 100%;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        /* Container */
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100%;
+        }
+
+        /* Header */
+        .app-header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 24px 32px;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .app-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2d3748;
+            margin: 0;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .progress-ring {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: conic-gradient(#dc2626 0deg 270deg, #e5e7eb 270deg 360deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .user-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        /* Navigation */
+        .nav-tabs {
+            display: flex;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 8px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            gap: 8px;
+        }
+
+        .nav-tab {
+            flex: 1;
+            padding: 16px 24px;
+            border: none;
+            background: transparent;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            color: #6b7280;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            color: white;
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+        }
+
+        .nav-tab:hover:not(.active) {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        /* Content Area */
+        .content-area {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            min-height: 500px;
+        }
+
+        /* Login Screen */
+        .login-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 60vh;
+        }
+
+        .login-card {
+            background: white;
+            border-radius: 24px;
+            padding: 48px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            max-width: 480px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .login-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 12px;
+        }
+
+        .login-subtitle {
+            font-size: 16px;
+            color: #6b7280;
+            margin-bottom: 32px;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 16px 32px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            color: white;
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(220, 38, 38, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f8fafc;
+            color: #475569;
+            border: 2px solid #e2e8f0;
+        }
+
+        .btn-secondary:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-full {
+            width: 100%;
+            margin-bottom: 16px;
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 24px;
+            text-align: left;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #fafafa;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #dc2626;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+        }
+
+        /* Cards */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid #f1f5f9;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .card-subtitle {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 16px;
+        }
+
+        .card-content {
+            margin-bottom: 20px;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        /* Task Cards */
+        .task-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border-left: 4px solid #dc2626;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .task-card:hover {
+            transform: translateX(4px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .task-card.completed {
+            border-left-color: #10b981;
+            background: #f0fdf4;
+        }
+
+        .task-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .task-location {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .task-description {
+            color: #4b5563;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-completed {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-graded {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        /* Progress Elements */
+        .progress-section {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            color: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .progress-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .progress-bar {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            height: 8px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: white;
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .countdown-timer {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            color: white;
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .countdown-time {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .countdown-label {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        /* Team Selection */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .team-member {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .team-member:hover {
+            border-color: #dc2626;
+            transform: translateY(-2px);
+        }
+
+        .team-member.selected {
+            border-color: #dc2626;
+            background: #fef2f2;
+        }
+
+        .member-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 20px;
+            margin: 0 auto 12px;
+        }
+
+        .member-name {
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 4px;
+        }
+
+        .member-role {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .team-member.current-user {
+            border-color: #10b981;
+            background: #f0fdf4;
+        }
+
+        .current-user-avatar {
+            background: linear-gradient(135deg, #10b981, #059669) !important;
+        }
+
+        /* Modals */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 32px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 80%;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: #6b7280;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+        }
+
+        .close-btn:hover {
+            background: #f3f4f6;
+        }
+
+        /* Vote Options */
+        .vote-option {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .vote-option:hover {
+            border-color: #dc2626;
+        }
+
+        .vote-option.selected {
+            border-color: #dc2626;
+            background: #fef2f2;
+        }
+
+        .vote-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .vote-day {
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .vote-time {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .vote-percentage {
+            font-weight: 700;
+            color: #dc2626;
+            font-size: 18px;
+        }
+
+        /* Photo Upload */
+        .photo-upload {
+            border: 3px dashed #d1d5db;
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 24px 0;
+            background: #fafafa;
+        }
+
+        .photo-upload:hover {
+            border-color: #dc2626;
+            background: #fef2f2;
+        }
+
+        .photo-upload.has-photo {
+            border-color: #10b981;
+            background: #f0fdf4;
+        }
+
+        .photo-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.6;
+        }
+
+        .photo-upload.has-photo .photo-icon {
+            opacity: 1;
+        }
+
+        /* Utility Classes */
+        .hidden {
+            display: none !important;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .flex-between {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .gap-16 {
+            gap: 16px;
+        }
+
+        .mb-24 {
+            margin-bottom: 24px;
+        }
+
+        .mt-24 {
+            margin-top: 24px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .app-container {
+                padding: 16px;
+            }
+            
+            .app-header {
+                padding: 20px;
+                flex-direction: column;
+                gap: 16px;
+                text-align: center;
+            }
+            
+            .nav-tabs {
+                flex-direction: column;
+                gap: 4px;
+            }
+            
+            .content-area {
+                padding: 24px;
+            }
+            
+            .login-card {
+                padding: 32px 24px;
+            }
+            
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .team-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Back Button */
+        .back-btn {
+            background: none;
+            border: none;
+            color: #dc2626;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 24px;
+            padding: 8px 0;
+            font-weight: 600;
+        }
+
+        .back-btn:hover {
+            color: #b91c1c;
+        }
+
+        /* Grade Table */
+        .grade-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 24px;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .grade-table th,
+        .grade-table td {
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .grade-table th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .grade-slider {
+            width: 100%;
+            margin: 8px 0;
+        }
+
+        /* Role Selection */
+        .role-option {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 20px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .role-option:hover {
+            border-color: #dc2626;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.15);
+        }
+
+        .role-option.selected {
+            border-color: #dc2626;
+            background: #fef2f2;
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
+        }
+
+        .role-icon {
+            font-size: 32px;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8fafc;
+            border-radius: 12px;
+            flex-shrink: 0;
+        }
+
+        .role-option.selected .role-icon {
+            background: #dc2626;
+        }
+
+        .role-info {
+            flex: 1;
+        }
+
+        .role-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 4px;
+        }
+
+        .role-description {
+            font-size: 14px;
+            color: #6b7280;
+            line-height: 1.4;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .btn:disabled:hover {
+            transform: none !important;
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3) !important;
+        }
+    </style>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body>
+  <div class="app-container"><!-- Header -->
+   <header class="app-header">
+    <h1 class="app-title" id="appTitle">MIS Scavenger Hunt</h1>
+    <div class="user-info">
+     <div class="progress-ring" id="progressRing">
+      75%
+     </div>
+     <div class="user-avatar" id="userAvatar">
+      SM
+     </div>
+    </div>
+   </header><!-- Login Screen -->
+   <div id="loginScreen">
+    <div class="login-container">
+     <div class="login-card"><!-- University Header -->
+      <div style="text-align: center; margin-bottom: 32px;">
+       <div style="width: 80px; height: 80px; background: #9d1535; border-radius: 12px; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; color: white; font-size: 32px; font-weight: 700;">
+        UA
+       </div>
+       <h2 class="login-title" style="color: #9d1535; margin-bottom: 8px;">University of Alabama</h2>
+       <p style="color: #6b7280; font-size: 16px; margin: 0;">myBama Authentication</p>
+      </div>
+      <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin-bottom: 24px; border-left: 4px solid #dc2626;">
+       <div style="font-weight: 600; color: #dc2626; margin-bottom: 8px;">
+        🎯 MIS Scavenger Hunt Access
+       </div>
+       <div style="font-size: 14px; color: #6b7280;" id="welcomeMessage">
+        Log in with your myBama credentials to access the scavenger hunt
+       </div>
+      </div>
+      <form onsubmit="handleLogin(event)">
+       <div class="form-group"><label class="form-label">myBama Username</label> <input type="text" class="form-input" id="username" placeholder="Enter your myBama username" required>
+       </div>
+       <div class="form-group"><label class="form-label">Password</label> <input type="password" class="form-input" id="password" placeholder="Enter your password" required>
+       </div>
+       <div style="margin-bottom: 24px;"><label style="display: flex; align-items: center; cursor: pointer; font-size: 14px; color: #6b7280;"> <input type="checkbox" style="margin-right: 8px; transform: scale(1.1);"> Remember me on this device </label>
+       </div><button type="submit" class="btn btn-primary btn-full" id="loginButton"> 🔐 Sign In with myBama </button>
+      </form>
+      <div style="text-align: center; margin-top: 24px;"><a href="#" style="color: #9d1535; text-decoration: none; font-size: 14px;" onclick="showToast('Password reset would redirect to myBama', 'info')">Forgot your password?</a>
+      </div>
+      <div style="text-align: center; margin-top: 32px; padding: 16px; background: #f0f9ff; border-radius: 12px; font-size: 13px; color: #1e40af; border: 1px solid #dbeafe;"><strong>🔒 Secure Login:</strong> This login is protected by University of Alabama's authentication system
+      </div>
+     </div>
+    </div>
+   </div><!-- Main App -->
+   <div id="mainApp" class="hidden"><!-- Navigation -->
+    <nav class="nav-tabs"><button class="nav-tab active" onclick="showTab('tasks')"> 📋 Tasks </button> <button class="nav-tab" onclick="showTab('team')"> 👥 Team </button> <button class="nav-tab" onclick="showTab('calendar')"> 📅 Calendar </button> <button class="nav-tab" onclick="showTab('profile')"> ⚙️ Profile </button>
+    </nav><!-- Content Area -->
+    <div class="content-area"><!-- Tasks View -->
+     <div id="tasksView" class="hidden">
+      <h2 style="margin-bottom: 24px; color: #1f2937;">All Tasks</h2>
+      <div id="allTasksList"><!-- Populated by JavaScript -->
+      </div>
+     </div><!-- Team View -->
+     <div id="teamView" class="hidden">
+      <h2 style="margin-bottom: 24px; color: #1f2937;">Select Your Team</h2>
+      <div class="nav-tabs" style="margin-bottom: 32px;"><button class="nav-tab active" onclick="showGroup(1)">Group 1</button> <button class="nav-tab" onclick="showGroup(2)">Group 2</button> <button class="nav-tab" onclick="showGroup(3)">Group 3</button>
+      </div>
+      <div class="team-grid" id="teamMembers"><!-- Populated by JavaScript -->
+      </div>
+      <div class="flex gap-16" id="teamActions"><button class="btn btn-primary" style="flex: 1;" onclick="selectTeam()" id="joinTeamBtn"> ✓ Join This Team </button> <button class="btn btn-secondary" style="flex: 1;" onclick="randomAssign()" id="randomAssignBtn"> 🎲 Random Assignment </button>
+      </div>
+      <div id="teamAssignedMessage" class="hidden" style="background: #f0fdf4; border: 2px solid #10b981; border-radius: 16px; padding: 24px; text-align: center;">
+       <div style="font-size: 48px; margin-bottom: 16px;">
+        ✅
+       </div>
+       <div style="font-size: 20px; font-weight: 700; color: #166534; margin-bottom: 8px;">
+        Team Assignment Complete!
+       </div>
+       <div style="font-size: 16px; color: #166534; margin-bottom: 16px;" id="assignedTeamInfo">
+        You are now part of Group 1
+       </div>
+       <div style="font-size: 14px; color: #6b7280;">
+        You can now complete tasks with your team members
+       </div>
+      </div>
+     </div><!-- Calendar View -->
+     <div id="calendarView" class="hidden">
+      <h2 style="margin-bottom: 24px; color: #1f2937;">Team Calendar</h2>
+      <div class="card-grid">
+       <div class="card">
+        <div class="card-title">
+         📅 Update Availability
+        </div>
+        <div class="card-subtitle">
+         Set your available times for team meetings
+        </div><button class="btn btn-primary" onclick="showModal('availabilityModal')"> Set Availability </button>
+       </div>
+       <div class="card">
+        <div class="card-title">
+         🗳️ Vote for Meeting Time
+        </div>
+        <div class="card-subtitle">
+         Help choose the best time for everyone
+        </div><button class="btn btn-secondary" onclick="showModal('votingModal')"> Cast Your Vote </button>
+       </div>
+      </div>
+     </div><!-- Profile View -->
+     <div id="profileView" class="hidden">
+      <h2 style="margin-bottom: 24px; color: #1f2937;">Profile Settings</h2>
+      <div class="card">
+       <div class="form-group"><label class="form-label">Full Name</label>
+        <div class="form-input" style="background: #f8fafc; color: #6b7280;">
+         Sarah Mitchell
+        </div>
+       </div>
+       <div class="form-group"><label class="form-label">Student ID</label>
+        <div class="form-input" style="background: #f8fafc; color: #6b7280;">
+         SM001234
+        </div>
+       </div>
+       <div class="form-group"><label class="form-label">Course</label>
+        <div class="form-input" style="background: #f8fafc; color: #6b7280;" id="courseName">
+         MIS 101
+        </div>
+       </div>
+       <div class="flex gap-16 mt-24"><button class="btn btn-secondary btn-full" onclick="logout()"> 🚪 Logout </button>
+       </div>
+      </div>
+     </div><!-- Task Detail View -->
+     <div id="taskDetailView" class="hidden"><button class="back-btn" onclick="showTab('tasks')"> ← Back to Tasks </button>
+      <div class="card">
+       <div class="card-title" id="taskDetailTitle">
+        Task Name
+       </div>
+       <div class="card-subtitle" id="taskDetailSchedule">
+        Scheduled for October 13, 2025 at 11:00 AM
+       </div><button class="btn btn-secondary" onclick="showModal('rescheduleModal')" style="margin-bottom: 24px;"> 📅 Reschedule Task </button>
+       <h4 style="margin-bottom: 16px; color: #374151;">Team Members Attending</h4>
+       <div id="taskDetailMembers" style="margin-bottom: 24px;"><!-- Populated by JavaScript -->
+       </div>
+       <h4 style="margin-bottom: 16px; color: #374151;">Task Description</h4>
+       <p id="taskDetailDescription" style="margin-bottom: 24px; line-height: 1.6; color: #4b5563;">Complete this task by visiting the specified location and taking a photo with your team members.</p>
+       <div class="photo-upload" id="photoUpload">
+        <div class="photo-icon">
+         📷
+        </div>
+        <div style="font-weight: 600; color: #374151; margin-bottom: 16px;">
+         Add Photo
+        </div>
+        <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;"><button class="btn btn-primary" onclick="takePhoto()" style="padding: 12px 20px; font-size: 14px;"> 📷 Take Photo </button> <button class="btn btn-secondary" onclick="selectPhoto()" style="padding: 12px 20px; font-size: 14px;"> 📁 Choose File </button>
+        </div>
+        <div style="font-size: 12px; color: #6b7280; margin-top: 12px;">
+         Take a new photo or select from your device
+        </div>
+       </div><button class="btn btn-success btn-full" onclick="submitTask()"> ✓ Submit Task </button>
+      </div>
+     </div>
+    </div>
+   </div><!-- TA Interface -->
+   <div id="taApp" class="hidden"><!-- TA Navigation -->
+    <nav class="nav-tabs"><button class="nav-tab active" onclick="showTATab('overview')"> 📊 Overview </button> <button class="nav-tab" onclick="showTATab('submissions')"> 📝 Submissions </button> <button class="nav-tab" onclick="showTATab('teams')"> 👥 Teams </button> <button class="nav-tab" onclick="showTATab('grading')"> ✅ Grading </button> <button class="nav-tab" onclick="showTATab('analytics')"> 📈 Analytics </button> <button class="nav-tab" onclick="showTATab('profile')"> ⚙️ Profile </button>
+    </nav><!-- TA Content Area -->
+    <div class="content-area"><!-- Overview View -->
+     <div id="taOverviewView">
+      <h2 style="margin-bottom: 24px; color: #1f2937;">Course Overview</h2>
+      <div class="card-grid">
+       <div class="card">
+        <div class="card-title">
+         📚 Total Students
+        </div>
+        <div style="font-size: 36px; font-weight: 700; color: #dc2626; margin: 16px 0;">
+         127
+        </div>
+        <div class="card-subtitle">
+         Enrolled in MIS 101
+        </div>
+       </div>
+       <div class="card">
+        <div class="card-title">
+         ✅ Completed Tasks
+        </div>
+        <div style="font-size: 36px; font-weight: 700; color: #10b981; margin: 16px 0;">
+         89%
+        </div>
+        <div class="card-subtitle">
+         Average completion rate
+        </div>
+       </div>
+       <div class="card">
+        <div class="card-title">
+         ⏳ Pending Reviews
+        </div>
+        <div style="font-size: 36px; font-weight: 700; color: #f59e0b; margin: 16px 0;">
+         23
+        </div>
+        <div class="card-subtitle">
+         Submissions awaiting review
+        </div>
+       </div>
+       <div class="card">
+        <div class="card-title">
+         👥 Active Teams
+        </div>
+        <div style="font-size: 36px; font-weight: 700; color: #3b82f6; margin: 16px 0;">
+         32
+        </div>
+        <div class="card-subtitle">
+         Teams currently participating
+        </div>
+       </div>
+      </div>
+      <div class="progress-section">
+       <h3 style="margin-bottom: 16px; color: white;">Hunt Progress</h3>
+       <div class="progress-stats"><span>Overall Completion</span> <span>89% Complete</span>
+       </div>
+       <div class="progress-bar">
+        <div class="progress-fill" style="width: 89%"></div>
+       </div>
+      </div>
+      <h3 style="margin-bottom: 20px; color: #1f2937;">Recent Activity</h3>
+      <div id="recentActivity"><!-- Populated by JavaScript -->
+      </div>
+     </div><!-- Submissions View -->
+     <div id="taSubmissionsView" class="hidden">
+      <h2 style="margin-bottom: 24px; color: #1f2937;">Student Submissions</h2>
+      <div class="flex gap-16 mb-24"><select class="form-input" style="flex: 1;" onchange="filterSubmissions(this.value)"> <option value="all">All Tasks</option> <option value="library">Library Exploration</option> <option value="student-center">Student Center Tour</option> <option value="computer-lab">Computer Lab Discovery</option> </select> <select class="form-input" style="flex: 1;" onchange="filterByStatus(this.value)"> <option value="all">All Status</option> <option value="pending">Pending Review</option> <option value="graded">Graded</option> <option value="needs-revision">Needs Revision</option> </select>
+      </div>
+      <div id="submissionsList"><!-- Populated by JavaScript -->
+      </div>
+     </div><!-- Teams View -->
+     <div id="taTeamsView" class="hidden">
+      <h2 style="margin-bottom: 24px; color: #1f2937;">Team Management</h2>
+      <div style="display: flex; gap: 16px; margin-bottom: 24px;"><button class="btn btn-primary" onclick="showModal('createTeamModal')"> ➕ Create New Team </button> <button class="btn btn-secondary" onclick="autoAssignStudents()"> 🎲 Auto-Assign Unassigned Students </button> <button class="btn btn-secondary" onclick="exportTeamData()"> 📊 Export Team Data </button>
+      </div>
+      <div id="teamsContainer"><!-- Populated by JavaScript -->
+      </div>
+     </div><!-- Grading View -->
+     <div id="taGradingView" class="hidden">
+      <h2 style="margin-bottom: 24px; color: #1f2937;">Grade Submissions</h2>
+      <div id="gradingQueue"><!-- Populated by JavaScript -->
+      </div>
+     </div><!-- Analytics View -->
+     <div id="taAnalyticsView" class="hidden">
+      <h2 style="margin-bottom: 24px; color: #1f2937;">Course Analytics</h2>
+      <div class="card-grid">
+       <div class="card">
+        <div class="card-title">
+         📊 Completion Trends
+        </div>
+        <div class="card-content">
+         <div style="height: 200px; background: #f8fafc; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #6b7280;">
+          📈 Chart showing completion rates over time
+         </div>
+        </div>
+       </div>
+       <div class="card">
+        <div class="card-title">
+         ⏱️ Average Time per Task
+        </div>
+        <div class="card-content">
+         <div style="margin: 16px 0;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Library Exploration</span> <span style="font-weight: 600;">45 min</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Student Center Tour</span> <span style="font-weight: 600;">32 min</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Computer Lab Discovery</span> <span style="font-weight: 600;">28 min</span>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="card">
+       <div class="card-title">
+        🎯 Performance Metrics
+       </div>
+       <div class="card-content">
+        <table class="grade-table">
+         <thead>
+          <tr>
+           <th>Metric</th>
+           <th>Current</th>
+           <th>Target</th>
+           <th>Status</th>
+          </tr>
+         </thead>
+         <tbody>
+          <tr>
+           <td>Overall Completion Rate</td>
+           <td>89%</td>
+           <td>85%</td>
+           <td><span class="status-badge status-completed">✓ Above Target</span></td>
+          </tr>
+          <tr>
+           <td>Average Grade</td>
+           <td>87.3</td>
+           <td>80.0</td>
+           <td><span class="status-badge status-completed">✓ Above Target</span></td>
+          </tr>
+          <tr>
+           <td>Student Engagement</td>
+           <td>92%</td>
+           <td>90%</td>
+           <td><span class="status-badge status-completed">✓ Above Target</span></td>
+          </tr>
+         </tbody>
+        </table>
+       </div>
+      </div>
+     </div><!-- TA Profile View -->
+     <div id="taProfileView" class="hidden">
+      <h2 style="margin-bottom: 24px; color: #1f2937;">TA Profile</h2>
+      <div class="card">
+       <div class="form-group"><label class="form-label">Full Name</label>
+        <div class="form-input" style="background: #f8fafc; color: #6b7280;">
+         Dr. Jennifer Wilson
+        </div>
+       </div>
+       <div class="form-group"><label class="form-label">Employee ID</label>
+        <div class="form-input" style="background: #f8fafc; color: #6b7280;">
+         TA789456
+        </div>
+       </div>
+       <div class="form-group"><label class="form-label">Course</label>
+        <div class="form-input" style="background: #f8fafc; color: #6b7280;" id="taCourse">
+         MIS 101
+        </div>
+       </div>
+       <div class="flex gap-16 mt-24"><button class="btn btn-secondary btn-full" onclick="logout()"> 🚪 Logout </button>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div><!-- Modals --> <!-- Availability Modal -->
+  <div id="availabilityModal" class="modal">
+   <div class="modal-content">
+    <div class="modal-header">
+     <div class="modal-title">
+      Set Your Availability
+     </div><button class="close-btn" onclick="closeModal('availabilityModal')">×</button>
+    </div>
+    <div class="form-group"><label class="form-label">Select Date</label> <input type="date" class="form-input" id="availabilityDate">
+    </div>
+    <div class="form-group"><label class="form-label">Available Time Slots</label>
+     <div style="margin-top: 16px;">
+      <div style="font-weight: 600; color: #374151; margin-bottom: 12px; font-size: 14px;">
+       🌅 Morning (8:00 AM - 12:00 PM)
+      </div><label style="display: flex; align-items: center; margin-bottom: 8px; cursor: pointer; padding: 8px; border-radius: 8px; transition: background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'"> <input type="checkbox" style="margin-right: 12px; transform: scale(1.2);"> <span>8:00 AM - 9:00 AM</span> </label> <label style="display: flex; align-items: center; margin-bottom: 8px; cursor: pointer; padding: 8px; border-radius: 8px; transition: background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'"> <input type="checkbox" style="margin-right: 12px; transform: scale(1.2);"> <span>9:00 AM - 10:00 AM</span> </label> <label style="display: flex; align-items: center; margin-bottom: 8px; cursor: pointer; padding: 8px; border-radius: 8px; transition: background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'"> <input type="checkbox" style="margin-right: 12px; transform: scale(1.2);"> <span>10:00 AM - 11:00 AM</span> </label> <label style="display: flex; align-items: center; margin-bottom: 16px; cursor: pointer; padding: 8px; border-radius: 8px; transition: background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'"> <input type="checkbox" style="margin-right: 12px; transform: scale(1.2);"> <span>11:00 AM - 12:00 PM</span> </label>
+      <div style="font-weight: 600; color: #374151; margin-bottom: 12px; font-size: 14px;">
+       ☀️ Afternoon (12:00 PM - 5:00 PM)
+      </div><label style="display: flex; align-items: center; margin-bottom: 8px; cursor: pointer; padding: 8px; border-radius: 8px; transition: background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'"> <input type="checkbox" style="margin-right: 12px; transform: scale(1.2);"> <span>12:00 PM - 1:00 PM</span> </label> <label style="display: flex; align-items: center; margin-bottom: 8px; cursor: pointer; padding: 8px; border-radius: 8px; transition: background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'"> <input type="checkbox" style="margin-right: 12px; transform: scale(1.2);"> <span>1:00 PM - 2:00 PM</span> </label> <label style="display: flex; align-items: center; margin-bottom: 8px; cursor: pointer; padding: 8px; border-radius: 8px; transition: background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'"> <input type="checkbox" style="margin-right: 12px; transform: scale(1.2);"> <span>2:00 PM - 3:00 PM</span> </label> <label style="display: flex; align-items: center; margin-bottom: 8px; cursor: pointer; padding: 8px; border-radius: 8px; transition: background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'"> <input type="checkbox" style="margin-right: 12px; transform: scale(1.2);"> <span>3:00 PM - 4:00 PM</span> </label> <label style="display: flex; align-items: center; margin-bottom: 16px; cursor: pointer; padding: 8px; border-radius: 8px; transition: background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'"> <input type="checkbox" style="margin-right: 12px; transform: scale(1.2);"> <span>4:00 PM - 5:00 PM</span> </label>
+      <div style="font-weight: 600; color: #374151; margin-bottom: 12px; font-size: 14px;">
+       🌆 Evening (5:00 PM - 9:00 PM)
+      </div><label style="display: flex; align-items: center; margin-bottom: 8px; cursor: pointer; padding: 8px; border-radius: 8px; transition: background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'"> <input type="checkbox" style="margin-right: 12px; transform: scale(1.2);"> <span>5:00 PM - 6:00 PM</span> </label> <label style="display: flex; align-items: center; margin-bottom: 8px; cursor: pointer; padding: 8px; border-radius: 8px; transition: background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'"> <input type="checkbox" style="margin-right: 12px; transform: scale(1.2);"> <span>6:00 PM - 7:00 PM</span> </label> <label style="display: flex; align-items: center; margin-bottom: 8px; cursor: pointer; padding: 8px; border-radius: 8px; transition: background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'"> <input type="checkbox" style="margin-right: 12px; transform: scale(1.2);"> <span>7:00 PM - 8:00 PM</span> </label> <label style="display: flex; align-items: center; margin-bottom: 8px; cursor: pointer; padding: 8px; border-radius: 8px; transition: background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'"> <input type="checkbox" style="margin-right: 12px; transform: scale(1.2);"> <span>8:00 PM - 9:00 PM</span> </label>
+     </div>
+     <div style="margin-top: 20px; padding: 16px; background: #f0f9ff; border-radius: 12px; border: 1px solid #dbeafe;">
+      <div style="font-weight: 600; color: #1e40af; margin-bottom: 8px;">
+       💡 Quick Selection
+      </div>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap;"><button type="button" class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;" onclick="selectTimeRange('morning')"> 🌅 All Morning </button> <button type="button" class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;" onclick="selectTimeRange('afternoon')"> ☀️ All Afternoon </button> <button type="button" class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;" onclick="selectTimeRange('evening')"> 🌆 All Evening </button> <button type="button" class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;" onclick="selectTimeRange('clear')"> ❌ Clear All </button>
+      </div>
+     </div>
+    </div><button class="btn btn-primary btn-full" onclick="updateAvailability()"> Save Availability </button>
+   </div>
+  </div><!-- Voting Modal -->
+  <div id="votingModal" class="modal">
+   <div class="modal-content">
+    <div class="modal-header">
+     <div class="modal-title">
+      Vote for Meeting Times
+     </div><button class="close-btn" onclick="closeModal('votingModal')">×</button>
+    </div>
+    <div id="voteOptions"><!-- Populated by JavaScript -->
+    </div><button class="btn btn-primary btn-full" onclick="saveVotes()"> Save My Votes </button>
+   </div>
+  </div><!-- Reschedule Modal -->
+  <div id="rescheduleModal" class="modal">
+   <div class="modal-content">
+    <div class="modal-header">
+     <div class="modal-title">
+      Reschedule Task
+     </div><button class="close-btn" onclick="closeModal('rescheduleModal')">×</button>
+    </div>
+    <div class="form-group"><label class="form-label">New Date</label> <input type="date" class="form-input" id="rescheduleDate">
+    </div>
+    <div class="form-group"><label class="form-label">New Time</label> <input type="time" class="form-input" id="rescheduleTime">
+    </div><button class="btn btn-primary btn-full" onclick="rescheduleTask()"> Reschedule Task </button>
+   </div>
+  </div><!-- Create Team Modal -->
+  <div id="createTeamModal" class="modal">
+   <div class="modal-content">
+    <div class="modal-header">
+     <div class="modal-title">
+      Create New Team
+     </div><button class="close-btn" onclick="closeModal('createTeamModal')">×</button>
+    </div>
+    <div class="form-group"><label class="form-label">Team Name</label> <input type="text" class="form-input" id="newTeamName" placeholder="Enter team name">
+    </div>
+    <div class="form-group"><label class="form-label">Maximum Members</label> <select class="form-input" id="maxMembers"> <option value="3">3 members</option> <option value="4" selected>4 members</option> <option value="5">5 members</option> <option value="6">6 members</option> </select>
+    </div><button class="btn btn-primary btn-full" onclick="createNewTeam()"> Create Team </button>
+   </div>
+  </div><!-- Edit Team Modal -->
+  <div id="editTeamModal" class="modal">
+   <div class="modal-content">
+    <div class="modal-header">
+     <div class="modal-title">
+      Edit Team
+     </div><button class="close-btn" onclick="closeModal('editTeamModal')">×</button>
+    </div>
+    <div class="form-group"><label class="form-label">Team Name</label> <input type="text" class="form-input" id="editTeamName">
+    </div>
+    <div class="form-group"><label class="form-label">Team Members</label>
+     <div id="editTeamMembers"><!-- Populated by JavaScript -->
+     </div>
+    </div>
+    <div class="form-group"><label class="form-label">Add Student</label> <select class="form-input" id="addStudentSelect"> <option value="">Select a student to add...</option> <!-- Populated by JavaScript --> </select> <button class="btn btn-secondary" onclick="addStudentToTeam()" style="margin-top: 8px;"> Add Student </button>
+    </div>
+    <div class="flex gap-16"><button class="btn btn-secondary" onclick="closeModal('editTeamModal')" style="flex: 1;"> Cancel </button> <button class="btn btn-primary" onclick="saveTeamChanges()" style="flex: 1;"> Save Changes </button>
+    </div>
+   </div>
+  </div><!-- Grade Submission Modal -->
+  <div id="gradeSubmissionModal" class="modal">
+   <div class="modal-content">
+    <div class="modal-header">
+     <div class="modal-title">
+      Grade Submission
+     </div><button class="close-btn" onclick="closeModal('gradeSubmissionModal')">×</button>
+    </div>
+    <div id="submissionDetails"><!-- Populated by JavaScript -->
+    </div>
+    <div class="form-group"><label class="form-label">Grade (0-100)</label> <input type="range" class="grade-slider" min="0" max="100" value="85" id="gradeSlider" oninput="updateGradeValue()">
+     <div style="text-align: center; font-weight: 600; color: #dc2626; font-size: 24px;" id="gradeValue">
+      85
+     </div>
+    </div>
+    <div class="form-group"><label class="form-label">Feedback</label> <textarea class="form-input" rows="4" id="gradeFeedback" placeholder="Provide detailed feedback for the student..."></textarea>
+    </div>
+    <div class="flex gap-16"><button class="btn btn-secondary" onclick="requestRevisionFromModal()" style="flex: 1;"> 📝 Request Revision </button> <button class="btn btn-success" onclick="submitGradeFromModal()" style="flex: 1;"> ✅ Submit Grade </button>
+    </div>
+   </div>
+  </div>
+  <script>
+        // Configuration
+        const defaultConfig = {
+            app_title: "MIS Scavenger Hunt",
+            course_name: "MIS 101",
+            welcome_message: "Welcome to the MIS Scavenger Hunt!"
+        };
+
+        // Global state
+        let currentTab = 'tasks';
+        let selectedGroup = 1;
+        let selectedVotes = [];
+        let currentTask = null;
+        let hasPhoto = false;
+        let selectedRole = null;
+        let currentTATab = 'overview';
+        let hasJoinedTeam = false;
+        let userTeamInfo = null;
+        let currentUserName = 'Student User';
+
+        // Mock data
+        const mockTasks = [
+            { id: 1, name: "Library Exploration", description: "Find the main library entrance and information desk", location: "Campus Library", completed: true, completedAt: "Oct 10, 2025 at 9:00 AM" },
+            { id: 2, name: "Student Center Tour", description: "Visit the student center and locate key services", location: "Student Center", completed: true, completedAt: "Oct 11, 2025 at 2:00 PM" },
+            { id: 3, name: "Computer Lab Discovery", description: "Locate the main computer lab and check available software", location: "Engineering Building", completed: true, completedAt: "Oct 12, 2025 at 11:00 AM" },
+            { id: 4, name: "Bookstore Visit", description: "Find the campus bookstore and explore textbook options", location: "Campus Bookstore", completed: false },
+            { id: 5, name: "Career Center Connection", description: "Visit the career center and learn about services", location: "Administration Building", completed: false },
+            { id: 6, name: "Recreation Facilities", description: "Explore the gym and recreational facilities", location: "Recreation Center", completed: false },
+            { id: 7, name: "Dining Hall Experience", description: "Visit the main dining hall and meal plan office", location: "Student Union", completed: false }
+        ];
+
+        const mockMembers = [
+            { name: "Sarah Mitchell", role: "Team Lead", initials: "SM" },
+            { name: "James Anderson", role: "Member", initials: "JA" },
+            { name: "Emily Rodriguez", role: "Member", initials: "ER" },
+            { name: "Michael Chen", role: "Member", initials: "MC" }
+        ];
+
+        const mockVoteOptions = [
+            { day: "Monday", time: "9:00 AM - 11:00 AM", percentage: 45 },
+            { day: "Monday", time: "1:00 PM - 3:00 PM", percentage: 75 },
+            { day: "Monday", time: "5:00 PM - 7:00 PM", percentage: 62 },
+            { day: "Tuesday", time: "10:00 AM - 12:00 PM", percentage: 38 },
+            { day: "Tuesday", time: "2:00 PM - 4:00 PM", percentage: 50 },
+            { day: "Tuesday", time: "6:00 PM - 8:00 PM", percentage: 71 },
+            { day: "Wednesday", time: "8:00 AM - 10:00 AM", percentage: 25 },
+            { day: "Wednesday", time: "12:00 PM - 2:00 PM", percentage: 42 },
+            { day: "Wednesday", time: "4:00 PM - 6:00 PM", percentage: 58 },
+            { day: "Thursday", time: "11:00 AM - 1:00 PM", percentage: 87 },
+            { day: "Thursday", time: "3:00 PM - 5:00 PM", percentage: 69 },
+            { day: "Thursday", time: "7:00 PM - 9:00 PM", percentage: 33 },
+            { day: "Friday", time: "9:00 AM - 11:00 AM", percentage: 52 },
+            { day: "Friday", time: "1:00 PM - 3:00 PM", percentage: 78 },
+            { day: "Friday", time: "5:00 PM - 7:00 PM", percentage: 41 }
+        ];
+
+        // Helper function to get current user name
+        function getCurrentUserName() {
+            return currentUserName;
+        }
+
+        // Initialize app
+        function initApp() {
+            updateCountdown();
+            setInterval(updateCountdown, 60000);
+            
+            // Initialize SDK
+            if (window.elementSdk) {
+                window.elementSdk.init({
+                    defaultConfig: defaultConfig,
+                    onConfigChange: async (config) => {
+                        document.getElementById('appTitle').textContent = config.app_title || defaultConfig.app_title;
+                        document.getElementById('welcomeMessage').textContent = config.welcome_message || defaultConfig.welcome_message;
+                        document.getElementById('courseName').textContent = config.course_name || defaultConfig.course_name;
+                    },
+                    mapToCapabilities: (config) => ({
+                        recolorables: [],
+                        borderables: [],
+                        fontEditable: undefined,
+                        fontSizeable: undefined
+                    }),
+                    mapToEditPanelValues: (config) => new Map([
+                        ["app_title", config.app_title || defaultConfig.app_title],
+                        ["course_name", config.course_name || defaultConfig.course_name],
+                        ["welcome_message", config.welcome_message || defaultConfig.welcome_message]
+                    ])
+                });
+            }
+        }
+
+        // Login functions
+        function handleLogin(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (!username || !password) {
+                showToast('Please enter both username and password', 'error');
+                return;
+            }
+            
+            // Show loading state
+            const loginButton = document.getElementById('loginButton');
+            const originalText = loginButton.innerHTML;
+            loginButton.innerHTML = '🔄 Authenticating...';
+            loginButton.disabled = true;
+            
+            // Simulate authentication delay
+            setTimeout(() => {
+                let userType = 'student';
+                let userName = 'Student User';
+                let userInitials = 'SU';
+                
+                // Check specific test credentials first
+                if (username.toLowerCase() === 'test' && password === '123') {
+                    userType = 'student';
+                    userName = 'Test Student';
+                    userInitials = 'TS';
+                } else if (username.toLowerCase() === 'ta' && password === 'ta123') {
+                    userType = 'ta';
+                    userName = 'Dr. Teaching Assistant';
+                    userInitials = 'TA';
+                } else {
+                    // Fallback to pattern-based detection for other usernames
+                    if (username.toLowerCase().includes('ta') || 
+                        username.toLowerCase().includes('instructor') || 
+                        username.toLowerCase().includes('prof') ||
+                        username.toLowerCase().includes('dr')) {
+                        userType = 'ta';
+                        userName = 'Dr. ' + username.charAt(0).toUpperCase() + username.slice(1);
+                        userInitials = username.substring(0, 2).toUpperCase();
+                    } else {
+                        // Extract name from username for student
+                        const nameParts = username.split(/[._-]/);
+                        if (nameParts.length >= 2) {
+                            userName = nameParts[0].charAt(0).toUpperCase() + nameParts[0].slice(1) + ' ' + 
+                                      nameParts[1].charAt(0).toUpperCase() + nameParts[1].slice(1);
+                            userInitials = nameParts[0].charAt(0).toUpperCase() + nameParts[1].charAt(0).toUpperCase();
+                        } else {
+                            userName = username.charAt(0).toUpperCase() + username.slice(1);
+                            userInitials = username.substring(0, 2).toUpperCase();
+                        }
+                    }
+                }
+                
+                // Store current user name globally
+                currentUserName = userName;
+                
+                // Update user display and progress
+                document.getElementById('userAvatar').textContent = userInitials;
+                updateProgressDisplay();
+                
+                // Hide login screen and show appropriate app
+                document.getElementById('loginScreen').classList.add('hidden');
+                
+                if (userType === 'student') {
+                    document.getElementById('mainApp').classList.remove('hidden');
+                    document.getElementById('taApp').classList.add('hidden');
+                    
+                    // Reset to tasks and populate data
+                    currentTab = 'tasks';
+                    document.querySelectorAll('#mainApp .nav-tab').forEach(t => t.classList.remove('active'));
+                    document.querySelector('#mainApp .nav-tab').classList.add('active');
+                    
+                    // Show tasks view
+                    document.querySelectorAll('#tasksView, #teamView, #calendarView, #profileView, #taskDetailView').forEach(view => {
+                        view.classList.add('hidden');
+                    });
+                    document.getElementById('tasksView').classList.remove('hidden');
+                    
+                    populateAllTasks();
+                    showToast(`Welcome, ${userName}! Ready to complete your scavenger hunt?`, 'success');
+                } else {
+                    document.getElementById('taApp').classList.remove('hidden');
+                    document.getElementById('mainApp').classList.add('hidden');
+                    populateTAData();
+                    showToast(`Welcome, ${userName}! Ready to review submissions?`, 'success');
+                }
+                
+                // Reset login button
+                loginButton.innerHTML = originalText;
+                loginButton.disabled = false;
+                
+            }, 2000); // 2 second authentication simulation
+        }
+
+        function logout() {
+            document.getElementById('mainApp').classList.add('hidden');
+            document.getElementById('taApp').classList.add('hidden');
+            document.getElementById('loginScreen').classList.remove('hidden');
+            
+            // Clear login form fields
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            
+            // Reset login button state
+            const loginButton = document.getElementById('loginButton');
+            loginButton.innerHTML = '🔐 Sign In with myBama';
+            loginButton.disabled = false;
+            
+            // Reset role selection
+            selectedRole = null;
+            document.querySelectorAll('.role-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            showToast('Logged out successfully', 'info');
+        }
+
+        // Navigation
+        function showTab(tab) {
+            // Update active tab
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            
+            // Hide all views
+            document.querySelectorAll('#tasksView, #teamView, #calendarView, #profileView, #taskDetailView').forEach(view => {
+                view.classList.add('hidden');
+            });
+            
+            // Show selected view
+            currentTab = tab;
+            switch(tab) {
+                case 'tasks':
+                    document.getElementById('tasksView').classList.remove('hidden');
+                    populateAllTasks();
+                    break;
+                case 'team':
+                    document.getElementById('teamView').classList.remove('hidden');
+                    populateTeamMembers();
+                    updateTeamViewState();
+                    break;
+                case 'calendar':
+                    document.getElementById('calendarView').classList.remove('hidden');
+                    break;
+                case 'profile':
+                    document.getElementById('profileView').classList.remove('hidden');
+                    break;
+            }
+        }
+
+        // Task functions
+        function populateTaskLists() {
+            const remainingTasks = mockTasks.filter(task => !task.completed).slice(0, 4);
+            const completedTasks = mockTasks.filter(task => task.completed).slice(0, 3);
+            
+            // Remaining tasks
+            const remainingContainer = document.getElementById('remainingTasksList');
+            remainingContainer.innerHTML = remainingTasks.map(task => `
+                <div class="task-card" onclick="showTaskDetail(${task.id})">
+                    <div class="task-name">${task.name}</div>
+                    <div class="task-location">📍 ${task.location}</div>
+                    <div class="task-description">${task.description}</div>
+                    <div class="card-actions">
+                        <button class="btn btn-secondary" onclick="event.stopPropagation(); showToast('Opening map...', 'info')">
+                            🗺️ View Map
+                        </button>
+                        <button class="btn btn-primary" onclick="event.stopPropagation(); showToast('Getting directions...', 'info')">
+                            🧭 Directions
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Completed tasks
+            const completedContainer = document.getElementById('completedTasksList');
+            completedContainer.innerHTML = completedTasks.map(task => `
+                <div class="task-card completed">
+                    <div class="task-name">${task.name} <span class="status-badge status-completed">✓ Completed</span></div>
+                    <div class="task-location">📍 ${task.location}</div>
+                    <div style="font-size: 14px; color: #6b7280; margin-top: 8px;">Completed on ${task.completedAt}</div>
+                </div>
+            `).join('');
+        }
+
+        function populateAllTasks() {
+            const container = document.getElementById('allTasksList');
+            container.innerHTML = mockTasks.map(task => `
+                <div class="task-card ${task.completed ? 'completed' : ''}" onclick="showTaskDetail(${task.id})">
+                    <div class="task-name">
+                        ${task.name} 
+                        ${task.completed ? '<span class="status-badge status-completed">✓ Completed</span>' : '<span class="status-badge status-pending">⏳ Pending</span>'}
+                    </div>
+                    <div class="task-location">📍 ${task.location}</div>
+                    <div class="task-description">${task.description}</div>
+                    ${task.completed ? 
+                        `<div style="font-size: 14px; color: #6b7280; margin-top: 12px;">Completed on ${task.completedAt}</div>` :
+                        `<div class="card-actions">
+                            <button class="btn btn-secondary" onclick="event.stopPropagation(); showToast('Opening map...', 'info')">🗺️ View Map</button>
+                            <button class="btn btn-primary" onclick="event.stopPropagation(); showToast('Getting directions...', 'info')">🧭 Directions</button>
+                        </div>`
+                    }
+                </div>
+            `).join('');
+        }
+
+        function showTaskDetail(taskId) {
+            currentTask = mockTasks.find(task => task.id === taskId);
+            if (!currentTask) return;
+            
+            document.getElementById('taskDetailTitle').textContent = currentTask.name;
+            document.getElementById('taskDetailDescription').textContent = currentTask.description;
+            
+            // Update team members display
+            updateTaskDetailMembers();
+            
+            // Hide all views and show task detail
+            document.querySelectorAll('#dashboardView, #tasksView, #teamView, #calendarView, #profileView').forEach(view => {
+                view.classList.add('hidden');
+            });
+            document.getElementById('taskDetailView').classList.remove('hidden');
+        }
+
+        function updateTaskDetailMembers() {
+            const membersContainer = document.getElementById('taskDetailMembers');
+            if (hasJoinedTeam && userTeamInfo) {
+                membersContainer.innerHTML = userTeamInfo.members.map(member => `
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                        <div class="member-avatar" style="width: 32px; height: 32px; font-size: 12px;">${member.initials}</div>
+                        <span style="font-weight: 500;">${member.name}</span>
+                        <span style="font-size: 12px; color: #6b7280;">(${member.role})</span>
+                    </div>
+                `).join('');
+            } else {
+                membersContainer.innerHTML = `
+                    <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 12px; padding: 16px; text-align: center;">
+                        <div style="font-weight: 600; color: #92400e; margin-bottom: 8px;">⚠️ No Team Selected</div>
+                        <div style="font-size: 14px; color: #92400e; margin-bottom: 12px;">You need to join a team before completing tasks</div>
+                        <button class="btn btn-primary" onclick="showTab('team')" style="padding: 8px 16px; font-size: 14px;">
+                            👥 Join a Team
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        function takePhoto() {
+            // Create file input for camera capture
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.accept = 'image/*';
+            fileInput.capture = 'environment'; // Use rear camera on mobile
+            
+            fileInput.onchange = function(event) {
+                handlePhotoSelection(event.target.files[0], 'Camera');
+            };
+            
+            // Trigger camera
+            fileInput.click();
+        }
+
+        function selectPhoto() {
+            // Create file input for photo selection from gallery
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.accept = 'image/*';
+            // No capture attribute - allows selection from gallery
+            
+            fileInput.onchange = function(event) {
+                handlePhotoSelection(event.target.files[0], 'Gallery');
+            };
+            
+            // Trigger file selection
+            fileInput.click();
+        }
+
+        function handlePhotoSelection(file, source) {
+            if (file) {
+                // Validate file type
+                if (!file.type.startsWith('image/')) {
+                    showToast('Please select a valid image file', 'error');
+                    return;
+                }
+                
+                // Validate file size (max 5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    showToast('Image too large. Please select a file under 5MB', 'error');
+                    return;
+                }
+                
+                // Create preview
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    hasPhoto = true;
+                    const photoUpload = document.getElementById('photoUpload');
+                    photoUpload.classList.add('has-photo');
+                    photoUpload.innerHTML = `
+                        <div style="position: relative;">
+                            <img src="${e.target.result}" alt="Selected photo" style="
+                                max-width: 100%; 
+                                max-height: 200px; 
+                                border-radius: 8px; 
+                                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                                margin-bottom: 12px;
+                            ">
+                            <button onclick="removePhoto()" style="
+                                position: absolute;
+                                top: 8px;
+                                right: 8px;
+                                background: rgba(239, 68, 68, 0.9);
+                                color: white;
+                                border: none;
+                                border-radius: 50%;
+                                width: 32px;
+                                height: 32px;
+                                cursor: pointer;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                font-size: 16px;
+                                backdrop-filter: blur(4px);
+                            " title="Remove photo">×</button>
+                        </div>
+                        <div style="font-weight: 600; color: #10b981;">✅ Photo Added from ${source}!</div>
+                        <div style="font-size: 14px; color: #6b7280; margin-top: 8px;">
+                            File: ${file.name} (${(file.size / 1024).toFixed(1)} KB)
+                        </div>
+                        <div style="display: flex; gap: 12px; justify-content: center; margin-top: 12px;">
+                            <button class="btn btn-primary" onclick="takePhoto()" style="padding: 8px 16px; font-size: 12px;">
+                                📷 Take New
+                            </button>
+                            <button class="btn btn-secondary" onclick="selectPhoto()" style="padding: 8px 16px; font-size: 12px;">
+                                📁 Choose Different
+                            </button>
+                        </div>
+                    `;
+                    
+                    // Store file reference for submission
+                    photoUpload.selectedFile = file;
+                    
+                    showToast(`Photo from ${source.toLowerCase()} added successfully!`, 'success');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        function removePhoto() {
+            hasPhoto = false;
+            const photoUpload = document.getElementById('photoUpload');
+            photoUpload.classList.remove('has-photo');
+            photoUpload.selectedFile = null;
+            photoUpload.innerHTML = `
+                <div class="photo-icon">📷</div>
+                <div style="font-weight: 600; color: #374151; margin-bottom: 16px;">Add Photo</div>
+                <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                    <button class="btn btn-primary" onclick="takePhoto()" style="padding: 12px 20px; font-size: 14px;">
+                        📷 Take Photo
+                    </button>
+                    <button class="btn btn-secondary" onclick="selectPhoto()" style="padding: 12px 20px; font-size: 14px;">
+                        📁 Choose File
+                    </button>
+                </div>
+                <div style="font-size: 12px; color: #6b7280; margin-top: 12px;">Take a new photo or select from your device</div>
+            `;
+            showToast('Photo removed', 'info');
+        }
+
+        function submitTask() {
+            if (!hasJoinedTeam) {
+                showToast('Please join a team before submitting tasks!', 'error');
+                return;
+            }
+            
+            if (!hasPhoto) {
+                showToast('Please select a photo before submitting!', 'error');
+                return;
+            }
+            
+            const photoUpload = document.getElementById('photoUpload');
+            const selectedFile = photoUpload.selectedFile;
+            
+            if (!selectedFile) {
+                showToast('No photo file found. Please select a photo again.', 'error');
+                return;
+            }
+            
+            // Show submission progress
+            showToast('Submitting task with photo...', 'info');
+            
+            // Simulate upload progress
+            setTimeout(() => {
+                if (currentTask) {
+                    currentTask.completed = true;
+                    currentTask.completedAt = new Date().toLocaleDateString('en-US', { 
+                        month: 'short', 
+                        day: 'numeric', 
+                        year: 'numeric' 
+                    }) + ' at ' + new Date().toLocaleTimeString('en-US', {
+                        hour: 'numeric',
+                        minute: '2-digit',
+                        hour12: true
+                    });
+                    
+                    // Store photo info with task
+                    currentTask.photoSubmitted = {
+                        name: selectedFile.name,
+                        size: selectedFile.size,
+                        type: selectedFile.type,
+                        submittedAt: new Date().toISOString()
+                    };
+                    
+                    // Update progress display
+                    updateProgressDisplay();
+                    
+                    // Reset photo state
+                    hasPhoto = false;
+                    photoUpload.selectedFile = null;
+                    
+                    showToast(`Task submitted successfully with photo: ${selectedFile.name}!`, 'success');
+                    showTab('tasks');
+                    populateTaskLists();
+                    populateAllTasks();
+                }
+            }, 1500); // Simulate upload time
+        }
+
+        function rescheduleTask() {
+            const date = document.getElementById('rescheduleDate').value;
+            const time = document.getElementById('rescheduleTime').value;
+            
+            if (date && time) {
+                const formattedDate = new Date(date).toLocaleDateString('en-US', { 
+                    month: 'long', 
+                    day: 'numeric', 
+                    year: 'numeric' 
+                });
+                const formattedTime = new Date(`2000-01-01T${time}`).toLocaleTimeString('en-US', {
+                    hour: 'numeric',
+                    minute: '2-digit',
+                    hour12: true
+                });
+                
+                document.getElementById('taskDetailSchedule').textContent = `Rescheduled for ${formattedDate} at ${formattedTime}`;
+                closeModal('rescheduleModal');
+                showToast('Task rescheduled successfully!', 'success');
+            }
+        }
+
+        // Team functions
+        function showGroup(groupNum) {
+            selectedGroup = groupNum;
+            document.querySelectorAll('#teamView .nav-tab').forEach(t => t.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            populateTeamMembers();
+        }
+
+        function populateTeamMembers() {
+            const container = document.getElementById('teamMembers');
+            let membersToShow = [...mockMembers];
+            
+            // If user has joined a team and we're viewing their group, add them to the display
+            if (hasJoinedTeam && selectedGroup === userTeamInfo.group) {
+                const currentUserInitials = document.getElementById('userAvatar').textContent;
+                const currentUserName = getCurrentUserName();
+                
+                // Check if user is not already in the mock members list
+                const userExists = membersToShow.some(member => member.initials === currentUserInitials);
+                if (!userExists) {
+                    membersToShow.push({
+                        name: currentUserName,
+                        role: "Member",
+                        initials: currentUserInitials,
+                        isCurrentUser: true
+                    });
+                }
+            }
+            
+            container.innerHTML = membersToShow.map((member, index) => `
+                <div class="team-member ${index === 0 ? 'selected' : ''} ${member.isCurrentUser ? 'current-user' : ''}" onclick="selectMember(${index})">
+                    <div class="member-avatar ${member.isCurrentUser ? 'current-user-avatar' : ''}">${member.initials}</div>
+                    <div class="member-name">${member.name} ${member.isCurrentUser ? '(You)' : ''}</div>
+                    <div class="member-role">${member.role}</div>
+                </div>
+            `).join('');
+        }
+
+        function updateTeamViewState() {
+            if (hasJoinedTeam) {
+                // Hide team selection buttons and show confirmation message
+                document.getElementById('teamActions').classList.add('hidden');
+                document.getElementById('teamAssignedMessage').classList.remove('hidden');
+                document.getElementById('assignedTeamInfo').textContent = `You are part of Group ${userTeamInfo.group}`;
+                
+                // Keep team member selection enabled for viewing
+                document.querySelectorAll('.team-member').forEach(member => {
+                    member.style.pointerEvents = 'auto';
+                    member.style.opacity = '1';
+                });
+                
+                // Keep group tabs enabled for viewing
+                document.querySelectorAll('#teamView .nav-tab').forEach(tab => {
+                    tab.style.pointerEvents = 'auto';
+                    tab.style.opacity = '1';
+                });
+                
+                // Set the correct group tab as active
+                document.querySelectorAll('#teamView .nav-tab').forEach((tab, index) => {
+                    tab.classList.remove('active');
+                    if (index === userTeamInfo.group - 1) {
+                        tab.classList.add('active');
+                    }
+                });
+                
+                // Update team display to show current user
+                populateTeamMembers();
+            } else {
+                // Show team selection buttons and hide confirmation message
+                document.getElementById('teamActions').classList.remove('hidden');
+                document.getElementById('teamAssignedMessage').classList.add('hidden');
+                
+                // Enable team member selection
+                document.querySelectorAll('.team-member').forEach(member => {
+                    member.style.pointerEvents = 'auto';
+                    member.style.opacity = '1';
+                });
+                
+                // Enable group tabs
+                document.querySelectorAll('#teamView .nav-tab').forEach(tab => {
+                    tab.style.pointerEvents = 'auto';
+                    tab.style.opacity = '1';
+                });
+            }
+        }
+
+        function selectMember(index) {
+            document.querySelectorAll('.team-member').forEach(member => member.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+        }
+
+        function selectTeam() {
+            if (hasJoinedTeam) {
+                showToast('You have already joined a team!', 'error');
+                return;
+            }
+            
+            hasJoinedTeam = true;
+            userTeamInfo = {
+                group: selectedGroup,
+                members: [...mockMembers],
+                joinedAt: new Date().toISOString()
+            };
+            
+            // Update team view state
+            updateTeamViewState();
+            
+            showToast(`Successfully joined Group ${selectedGroup}!`, 'success');
+            
+            // Update task detail view if currently viewing a task
+            if (currentTask) {
+                updateTaskDetailMembers();
+            }
+        }
+
+        function randomAssign() {
+            if (hasJoinedTeam) {
+                showToast('You have already joined a team!', 'error');
+                return;
+            }
+            
+            const randomGroup = Math.floor(Math.random() * 3) + 1;
+            selectedGroup = randomGroup;
+            hasJoinedTeam = true;
+            userTeamInfo = {
+                group: randomGroup,
+                members: [...mockMembers],
+                joinedAt: new Date().toISOString()
+            };
+            
+            // Update group tab selection to show the randomly assigned group
+            document.querySelectorAll('#teamView .nav-tab').forEach((tab, index) => {
+                tab.classList.remove('active');
+                if (index === randomGroup - 1) {
+                    tab.classList.add('active');
+                }
+            });
+            
+            // Update team view state
+            updateTeamViewState();
+            
+            showToast(`Randomly assigned to Group ${randomGroup}!`, 'success');
+            
+            // Update task detail view if currently viewing a task
+            if (currentTask) {
+                updateTaskDetailMembers();
+            }
+        }
+
+        // Calendar functions
+        function updateAvailability() {
+            const date = document.getElementById('availabilityDate').value;
+            if (date) {
+                closeModal('availabilityModal');
+                showToast('Availability updated successfully!', 'success');
+            } else {
+                showToast('Please select a date', 'error');
+            }
+        }
+
+        function populateVoteOptions() {
+            const container = document.getElementById('voteOptions');
+            container.innerHTML = mockVoteOptions.map((option, index) => `
+                <div class="vote-option ${selectedVotes.includes(index) ? 'selected' : ''}" onclick="toggleVote(${index})">
+                    <div class="vote-header">
+                        <div>
+                            <div class="vote-day">${option.day}</div>
+                            <div class="vote-time">${option.time}</div>
+                        </div>
+                        <div class="vote-percentage">${option.percentage}%</div>
+                    </div>
+                    <div class="progress-bar" style="margin-top: 12px;">
+                        <div class="progress-fill" style="width: ${option.percentage}%; background: #dc2626;"></div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function toggleVote(index) {
+            if (selectedVotes.includes(index)) {
+                selectedVotes = selectedVotes.filter(v => v !== index);
+            } else {
+                selectedVotes.push(index);
+            }
+            
+            document.querySelectorAll('.vote-option').forEach((option, i) => {
+                if (selectedVotes.includes(i)) {
+                    option.classList.add('selected');
+                } else {
+                    option.classList.remove('selected');
+                }
+            });
+        }
+
+        function saveVotes() {
+            closeModal('votingModal');
+            showToast(`Selected ${selectedVotes.length} time slots!`, 'success');
+        }
+
+        // Time selection helper functions
+        function selectTimeRange(range) {
+            const checkboxes = document.querySelectorAll('#availabilityModal input[type="checkbox"]');
+            
+            switch(range) {
+                case 'morning':
+                    // Select morning slots (first 4 checkboxes)
+                    for (let i = 0; i < 4; i++) {
+                        if (checkboxes[i]) checkboxes[i].checked = true;
+                    }
+                    showToast('All morning slots selected!', 'success');
+                    break;
+                case 'afternoon':
+                    // Select afternoon slots (next 5 checkboxes)
+                    for (let i = 4; i < 9; i++) {
+                        if (checkboxes[i]) checkboxes[i].checked = true;
+                    }
+                    showToast('All afternoon slots selected!', 'success');
+                    break;
+                case 'evening':
+                    // Select evening slots (last 4 checkboxes)
+                    for (let i = 9; i < 13; i++) {
+                        if (checkboxes[i]) checkboxes[i].checked = true;
+                    }
+                    showToast('All evening slots selected!', 'success');
+                    break;
+                case 'clear':
+                    // Clear all checkboxes
+                    checkboxes.forEach(checkbox => checkbox.checked = false);
+                    showToast('All selections cleared!', 'info');
+                    break;
+            }
+        }
+
+        // Modal functions
+        function showModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+            
+            if (modalId === 'votingModal') {
+                populateVoteOptions();
+            }
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Utility functions
+        function updateCountdown() {
+            const now = new Date();
+            const endDate = new Date('2025-10-15T23:59:59');
+            const diff = endDate - now;
+            
+            if (diff > 0) {
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                
+                document.getElementById('countdownTime').textContent = `${days}d ${hours}h ${minutes}m`;
+            } else {
+                document.getElementById('countdownTime').textContent = 'Hunt Ended';
+            }
+        }
+
+        function updateProgressDisplay() {
+            const completedCount = mockTasks.filter(task => task.completed).length;
+            const totalCount = mockTasks.length;
+            const progress = Math.round((completedCount / totalCount) * 100);
+            
+            // Update progress ring in header
+            document.getElementById('progressRing').textContent = progress + '%';
+            
+            // Update progress section in dashboard
+            const progressStats = document.querySelector('.progress-stats span:last-child');
+            if (progressStats) {
+                progressStats.textContent = `${completedCount} of ${totalCount} tasks`;
+            }
+            
+            const progressFill = document.querySelector('.progress-section .progress-fill');
+            if (progressFill) {
+                progressFill.style.width = progress + '%';
+            }
+        }
+
+        // TA Functions
+        function showTATab(tab) {
+            // Update active tab
+            document.querySelectorAll('#taApp .nav-tab').forEach(t => t.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            
+            // Hide all TA views
+            document.querySelectorAll('#taOverviewView, #taSubmissionsView, #taTeamsView, #taGradingView, #taAnalyticsView, #taProfileView').forEach(view => {
+                view.classList.add('hidden');
+            });
+            
+            // Show selected view
+            currentTATab = tab;
+            switch(tab) {
+                case 'overview':
+                    document.getElementById('taOverviewView').classList.remove('hidden');
+                    populateRecentActivity();
+                    break;
+                case 'submissions':
+                    document.getElementById('taSubmissionsView').classList.remove('hidden');
+                    populateSubmissions();
+                    break;
+                case 'teams':
+                    document.getElementById('taTeamsView').classList.remove('hidden');
+                    populateTeamsManagement();
+                    break;
+                case 'grading':
+                    document.getElementById('taGradingView').classList.remove('hidden');
+                    populateGradingQueue();
+                    break;
+                case 'analytics':
+                    document.getElementById('taAnalyticsView').classList.remove('hidden');
+                    break;
+                case 'profile':
+                    document.getElementById('taProfileView').classList.remove('hidden');
+                    break;
+            }
+        }
+
+        function populateTAData() {
+            populateRecentActivity();
+            populateSubmissions();
+            populateGradingQueue();
+            populateTeamsManagement();
+        }
+
+        // Team management data
+        let teamsData = [
+            {
+                id: 1,
+                name: "Team Alpha",
+                members: [
+                    { name: "Sarah Mitchell", id: "SM001", initials: "SM" },
+                    { name: "James Anderson", id: "JA002", initials: "JA" },
+                    { name: "Emily Rodriguez", id: "ER003", initials: "ER" },
+                    { name: "Michael Chen", id: "MC004", initials: "MC" }
+                ],
+                completion: 85,
+                maxMembers: 4
+            },
+            {
+                id: 2,
+                name: "Team Beta",
+                members: [
+                    { name: "Alex Brown", id: "AB005", initials: "AB" },
+                    { name: "Chris Davis", id: "CD006", initials: "CD" },
+                    { name: "Emma Foster", id: "EF007", initials: "EF" }
+                ],
+                completion: 92,
+                maxMembers: 4
+            },
+            {
+                id: 3,
+                name: "Team Gamma",
+                members: [
+                    { name: "Grace Hill", id: "GH008", initials: "GH" },
+                    { name: "Ian Johnson", id: "IJ009", initials: "IJ" },
+                    { name: "Kate Lewis", id: "KL010", initials: "KL" },
+                    { name: "Mark Nelson", id: "MN011", initials: "MN" }
+                ],
+                completion: 78,
+                maxMembers: 4
+            }
+        ];
+
+        let unassignedStudents = [
+            { name: "Oliver Parker", id: "OP012", initials: "OP" },
+            { name: "Quinn Roberts", id: "QR013", initials: "QR" },
+            { name: "Riley Smith", id: "RS014", initials: "RS" }
+        ];
+
+        let currentEditingTeam = null;
+        let currentGradingSubmission = null;
+
+        function populateRecentActivity() {
+            const activities = [
+                { student: "Sarah Mitchell", action: "submitted Library Exploration", time: "2 minutes ago", type: "submission" },
+                { student: "James Anderson", action: "completed Student Center Tour", time: "15 minutes ago", type: "completion" },
+                { student: "Emily Rodriguez", action: "joined Team Alpha", time: "1 hour ago", type: "team" },
+                { student: "Michael Chen", action: "submitted Computer Lab Discovery", time: "2 hours ago", type: "submission" }
+            ];
+
+            const container = document.getElementById('recentActivity');
+            container.innerHTML = activities.map(activity => `
+                <div class="task-card" style="border-left-color: ${activity.type === 'submission' ? '#f59e0b' : activity.type === 'completion' ? '#10b981' : '#3b82f6'};">
+                    <div class="task-name">${activity.student}</div>
+                    <div class="task-description">${activity.action}</div>
+                    <div style="font-size: 14px; color: #6b7280; margin-top: 8px;">${activity.time}</div>
+                </div>
+            `).join('');
+        }
+
+        function populateSubmissions() {
+            const submissions = [
+                { id: 1, student: "Sarah Mitchell", task: "Library Exploration", submitted: "Oct 12, 2025", status: "pending", photo: true },
+                { id: 2, student: "James Anderson", task: "Student Center Tour", submitted: "Oct 11, 2025", status: "graded", grade: 95, photo: true },
+                { id: 3, student: "Emily Rodriguez", task: "Computer Lab Discovery", submitted: "Oct 10, 2025", status: "needs-revision", photo: false },
+                { id: 4, student: "Michael Chen", task: "Library Exploration", submitted: "Oct 12, 2025", status: "pending", photo: true }
+            ];
+
+            const container = document.getElementById('submissionsList');
+            container.innerHTML = submissions.map(sub => `
+                <div class="task-card">
+                    <div class="flex-between">
+                        <div>
+                            <div class="task-name">${sub.student}</div>
+                            <div class="task-location">📋 ${sub.task}</div>
+                            <div style="font-size: 14px; color: #6b7280; margin-top: 4px;">Submitted: ${sub.submitted}</div>
+                        </div>
+                        <div style="text-align: right;">
+                            ${sub.status === 'pending' ? '<span class="status-badge status-pending">⏳ Pending Review</span>' : 
+                              sub.status === 'graded' ? `<span class="status-badge status-completed">✓ Graded (${sub.grade})</span>` :
+                              '<span class="status-badge" style="background: #fecaca; color: #991b1b;">⚠️ Needs Revision</span>'}
+                            <div style="margin-top: 8px;">
+                                ${sub.photo ? '📷 Photo included' : '❌ No photo'}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-actions" style="margin-top: 16px;">
+                        <button class="btn btn-secondary" onclick="reviewSubmission(${sub.id})">📝 Review</button>
+                        ${sub.status === 'pending' ? '<button class="btn btn-primary" onclick="gradeSubmission(' + sub.id + ')">✅ Grade</button>' : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function populateGradingQueue() {
+            const queue = [
+                { id: 1, student: "Sarah Mitchell", task: "Library Exploration", submitted: "Oct 12, 2025" },
+                { id: 4, student: "Michael Chen", task: "Library Exploration", submitted: "Oct 12, 2025" }
+            ];
+
+            const container = document.getElementById('gradingQueue');
+            container.innerHTML = queue.map(item => `
+                <div class="card">
+                    <div class="card-title">${item.student} - ${item.task}</div>
+                    <div class="card-subtitle">Submitted: ${item.submitted}</div>
+                    <div class="card-content">
+                        <div style="margin: 16px 0;">
+                            <div style="background: #f8fafc; border-radius: 8px; padding: 20px; text-align: center; color: #6b7280; margin-bottom: 16px;">
+                                📷 Student photo would be displayed here
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Grade (0-100)</label>
+                                <input type="range" class="grade-slider" min="0" max="100" value="85" oninput="updateGradeDisplay(this, ${item.id})">
+                                <div style="text-align: center; font-weight: 600; color: #dc2626;" id="grade-${item.id}">85</div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Feedback</label>
+                                <textarea class="form-input" rows="3" placeholder="Provide feedback for the student..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn btn-secondary" onclick="requestRevision(${item.id})">📝 Request Revision</button>
+                        <button class="btn btn-success" onclick="submitGrade(${item.id})">✅ Submit Grade</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterSubmissions(taskFilter) {
+            showToast(`Filtering by: ${taskFilter}`, 'info');
+        }
+
+        function filterByStatus(statusFilter) {
+            showToast(`Filtering by status: ${statusFilter}`, 'info');
+        }
+
+        function reviewSubmission(id) {
+            showToast('Opening submission review...', 'info');
+        }
+
+        function gradeSubmission(id) {
+            const submissions = [
+                { id: 1, student: "Sarah Mitchell", task: "Library Exploration", submitted: "Oct 12, 2025", status: "pending", photo: true, description: "Found the main library entrance and took photos with team members at the information desk." },
+                { id: 2, student: "James Anderson", task: "Student Center Tour", submitted: "Oct 11, 2025", status: "graded", grade: 95, photo: true, description: "Completed tour of student center, located all key services including dining, bookstore, and student activities office." },
+                { id: 3, student: "Emily Rodriguez", task: "Computer Lab Discovery", submitted: "Oct 10, 2025", status: "needs-revision", photo: false, description: "Located computer lab but photo was unclear and didn't show team members." },
+                { id: 4, student: "Michael Chen", task: "Library Exploration", submitted: "Oct 12, 2025", status: "pending", photo: true, description: "Team photo at library entrance, documented available study spaces and research resources." }
+            ];
+            
+            currentGradingSubmission = submissions.find(sub => sub.id === id);
+            if (!currentGradingSubmission) return;
+            
+            // Populate submission details
+            document.getElementById('submissionDetails').innerHTML = `
+                <div class="card" style="margin-bottom: 20px;">
+                    <div class="card-title">${currentGradingSubmission.student}</div>
+                    <div class="card-subtitle">${currentGradingSubmission.task} • Submitted: ${currentGradingSubmission.submitted}</div>
+                    <div class="card-content">
+                        <div style="background: #f8fafc; border-radius: 8px; padding: 20px; text-align: center; color: #6b7280; margin: 16px 0;">
+                            ${currentGradingSubmission.photo ? '📷 Student photo would be displayed here' : '❌ No photo submitted'}
+                        </div>
+                        <div style="margin: 16px 0;">
+                            <strong>Task Description:</strong>
+                            <p style="margin: 8px 0; line-height: 1.5;">${currentGradingSubmission.description}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Reset form
+            document.getElementById('gradeSlider').value = currentGradingSubmission.grade || 85;
+            document.getElementById('gradeValue').textContent = currentGradingSubmission.grade || 85;
+            document.getElementById('gradeFeedback').value = '';
+            
+            showModal('gradeSubmissionModal');
+        }
+
+        function requestRevisionFromModal() {
+            if (!currentGradingSubmission) return;
+            
+            const feedback = document.getElementById('gradeFeedback').value.trim();
+            if (!feedback) {
+                showToast('Please provide feedback for the revision request', 'error');
+                return;
+            }
+            
+            currentGradingSubmission.status = 'needs-revision';
+            currentGradingSubmission.feedback = feedback;
+            
+            closeModal('gradeSubmissionModal');
+            populateSubmissions();
+            populateGradingQueue();
+            
+            showToast(`Revision requested for ${currentGradingSubmission.student}`, 'info');
+        }
+
+        function submitGradeFromModal() {
+            if (!currentGradingSubmission) return;
+            
+            const grade = parseInt(document.getElementById('gradeSlider').value);
+            const feedback = document.getElementById('gradeFeedback').value.trim();
+            
+            if (!feedback) {
+                showToast('Please provide feedback for the student', 'error');
+                return;
+            }
+            
+            currentGradingSubmission.status = 'graded';
+            currentGradingSubmission.grade = grade;
+            currentGradingSubmission.feedback = feedback;
+            currentGradingSubmission.gradedAt = new Date().toISOString();
+            
+            closeModal('gradeSubmissionModal');
+            populateSubmissions();
+            populateGradingQueue();
+            
+            showToast(`Grade ${grade} submitted for ${currentGradingSubmission.student}!`, 'success');
+        }
+
+        function populateTeamsManagement() {
+            const container = document.getElementById('teamsContainer');
+            container.innerHTML = `
+                ${unassignedStudents.length > 0 ? `
+                    <div class="card" style="border-left: 4px solid #f59e0b; margin-bottom: 24px;">
+                        <div class="card-title">⚠️ Unassigned Students (${unassignedStudents.length})</div>
+                        <div class="card-content">
+                            <div style="display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0;">
+                                ${unassignedStudents.map(student => `
+                                    <div style="display: flex; align-items: center; gap: 8px; background: #fef3c7; padding: 8px 12px; border-radius: 8px;">
+                                        <div class="member-avatar" style="width: 24px; height: 24px; font-size: 10px;">${student.initials}</div>
+                                        <span style="font-size: 14px;">${student.name}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                ` : ''}
+                
+                <div class="card-grid">
+                    ${teamsData.map(team => `
+                        <div class="card">
+                            <div class="card-title">${team.name}</div>
+                            <div class="card-subtitle">${team.members.length}/${team.maxMembers} members • ${team.completion}% completion</div>
+                            <div class="card-content">
+                                <div style="margin: 16px 0;">
+                                    <div style="display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap;">
+                                        ${team.members.map(member => `
+                                            <div style="display: flex; align-items: center; gap: 6px; background: #f0fdf4; padding: 6px 10px; border-radius: 6px; border: 1px solid #dcfce7;">
+                                                <div class="member-avatar" style="width: 24px; height: 24px; font-size: 10px;">${member.initials}</div>
+                                                <span style="font-size: 12px; font-weight: 500;">${member.name}</span>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: ${team.completion}%; background: #dc2626;"></div>
+                                </div>
+                            </div>
+                            <div class="card-actions">
+                                <button class="btn btn-secondary" onclick="editTeam(${team.id})">✏️ Edit Team</button>
+                                <button class="btn btn-secondary" onclick="viewTeamDetails(${team.id})">👁️ View Details</button>
+                                <button class="btn btn-secondary" onclick="deleteTeam(${team.id})" style="color: #dc2626;">🗑️ Delete</button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function createNewTeam() {
+            const teamName = document.getElementById('newTeamName').value.trim();
+            const maxMembers = parseInt(document.getElementById('maxMembers').value);
+            
+            if (!teamName) {
+                showToast('Please enter a team name', 'error');
+                return;
+            }
+            
+            const newTeam = {
+                id: teamsData.length + 1,
+                name: teamName,
+                members: [],
+                completion: 0,
+                maxMembers: maxMembers
+            };
+            
+            teamsData.push(newTeam);
+            populateTeamsManagement();
+            closeModal('createTeamModal');
+            
+            // Clear form
+            document.getElementById('newTeamName').value = '';
+            
+            showToast(`Team "${teamName}" created successfully!`, 'success');
+        }
+
+        function editTeam(teamId) {
+            currentEditingTeam = teamsData.find(team => team.id === teamId);
+            if (!currentEditingTeam) return;
+            
+            document.getElementById('editTeamName').value = currentEditingTeam.name;
+            
+            // Populate current members
+            const membersContainer = document.getElementById('editTeamMembers');
+            membersContainer.innerHTML = currentEditingTeam.members.map(member => `
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background: #f8fafc; border-radius: 8px; margin-bottom: 8px;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div class="member-avatar" style="width: 32px; height: 32px; font-size: 12px;">${member.initials}</div>
+                        <span style="font-weight: 500;">${member.name}</span>
+                        <span style="font-size: 12px; color: #6b7280;">(${member.id})</span>
+                    </div>
+                    <button class="btn btn-secondary" onclick="removeStudentFromTeam('${member.id}')" style="padding: 4px 8px; font-size: 12px; color: #dc2626;">
+                        Remove
+                    </button>
+                </div>
+            `).join('');
+            
+            // Populate available students dropdown
+            const availableStudents = [...unassignedStudents];
+            const addStudentSelect = document.getElementById('addStudentSelect');
+            addStudentSelect.innerHTML = '<option value="">Select a student to add...</option>' +
+                availableStudents.map(student => `
+                    <option value="${student.id}">${student.name} (${student.id})</option>
+                `).join('');
+            
+            showModal('editTeamModal');
+        }
+
+        function addStudentToTeam() {
+            const studentId = document.getElementById('addStudentSelect').value;
+            if (!studentId || !currentEditingTeam) return;
+            
+            if (currentEditingTeam.members.length >= currentEditingTeam.maxMembers) {
+                showToast('Team is at maximum capacity', 'error');
+                return;
+            }
+            
+            const student = unassignedStudents.find(s => s.id === studentId);
+            if (!student) return;
+            
+            // Add to team
+            currentEditingTeam.members.push(student);
+            
+            // Remove from unassigned
+            const index = unassignedStudents.findIndex(s => s.id === studentId);
+            if (index > -1) {
+                unassignedStudents.splice(index, 1);
+            }
+            
+            // Refresh the edit modal
+            editTeam(currentEditingTeam.id);
+            showToast(`${student.name} added to team`, 'success');
+        }
+
+        function removeStudentFromTeam(studentId) {
+            if (!currentEditingTeam) return;
+            
+            const memberIndex = currentEditingTeam.members.findIndex(m => m.id === studentId);
+            if (memberIndex === -1) return;
+            
+            const student = currentEditingTeam.members[memberIndex];
+            
+            // Remove from team
+            currentEditingTeam.members.splice(memberIndex, 1);
+            
+            // Add to unassigned
+            unassignedStudents.push(student);
+            
+            // Refresh the edit modal
+            editTeam(currentEditingTeam.id);
+            showToast(`${student.name} removed from team`, 'info');
+        }
+
+        function saveTeamChanges() {
+            if (!currentEditingTeam) return;
+            
+            const newName = document.getElementById('editTeamName').value.trim();
+            if (!newName) {
+                showToast('Please enter a team name', 'error');
+                return;
+            }
+            
+            currentEditingTeam.name = newName;
+            
+            populateTeamsManagement();
+            closeModal('editTeamModal');
+            showToast('Team updated successfully!', 'success');
+        }
+
+        function deleteTeam(teamId) {
+            const team = teamsData.find(t => t.id === teamId);
+            if (!team) return;
+            
+            // Move all members to unassigned
+            unassignedStudents.push(...team.members);
+            
+            // Remove team
+            const teamIndex = teamsData.findIndex(t => t.id === teamId);
+            if (teamIndex > -1) {
+                teamsData.splice(teamIndex, 1);
+            }
+            
+            populateTeamsManagement();
+            showToast(`Team "${team.name}" deleted. Members moved to unassigned.`, 'info');
+        }
+
+        function autoAssignStudents() {
+            if (unassignedStudents.length === 0) {
+                showToast('No unassigned students to assign', 'info');
+                return;
+            }
+            
+            let assigned = 0;
+            const studentsToAssign = [...unassignedStudents];
+            
+            for (const student of studentsToAssign) {
+                // Find team with space
+                const availableTeam = teamsData.find(team => team.members.length < team.maxMembers);
+                
+                if (availableTeam) {
+                    availableTeam.members.push(student);
+                    const index = unassignedStudents.findIndex(s => s.id === student.id);
+                    if (index > -1) {
+                        unassignedStudents.splice(index, 1);
+                    }
+                    assigned++;
+                }
+            }
+            
+            populateTeamsManagement();
+            showToast(`Auto-assigned ${assigned} students to teams`, 'success');
+        }
+
+        function exportTeamData() {
+            const data = {
+                teams: teamsData,
+                unassigned: unassignedStudents,
+                exportDate: new Date().toISOString()
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'team-data.json';
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            showToast('Team data exported successfully!', 'success');
+        }
+
+        function viewTeamDetails(teamId) {
+            const team = teamsData.find(t => t.id === teamId);
+            if (!team) return;
+            
+            showToast(`Viewing details for ${team.name} - ${team.members.length} members, ${team.completion}% complete`, 'info');
+        }
+
+        function updateGradeDisplay(slider, id) {
+            document.getElementById(`grade-${id}`).textContent = slider.value;
+        }
+
+        function updateGradeValue() {
+            const slider = document.getElementById('gradeSlider');
+            const display = document.getElementById('gradeValue');
+            display.textContent = slider.value;
+        }
+
+        function requestRevision(id) {
+            showToast('Revision request sent to student', 'info');
+        }
+
+        function submitGrade(id) {
+            const grade = document.querySelector(`#grade-${id}`).textContent;
+            showToast(`Grade ${grade} submitted successfully!`, 'success');
+        }
+
+        function showToast(message, type = 'info') {
+            const colors = {
+                success: '#10b981',
+                error: '#ef4444',
+                info: '#3b82f6'
+            };
+            
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                top: 100px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: ${colors[type]};
+                color: white;
+                padding: 16px 24px;
+                border-radius: 12px;
+                z-index: 2000;
+                font-weight: 600;
+                box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+                backdrop-filter: blur(10px);
+            `;
+            toast.textContent = message;
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.parentNode.removeChild(toast);
+                }
+            }, 3000);
+        }
+
+        // Event listeners
+        document.addEventListener('click', function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('active');
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99a8ae11f3a0bd12',t:'MTc2MjQ3NDk4NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
