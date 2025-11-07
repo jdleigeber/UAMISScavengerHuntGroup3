@@ -1493,10 +1493,10 @@
                     <div class="task-location">📍 ${task.location}</div>
                     <div class="task-description">${task.description}</div>
                     <div class="card-actions">
-                        <button class="btn btn-secondary" onclick="event.stopPropagation(); showToast('Opening map...', 'info')">
+                        <button class="btn btn-secondary" onclick="event.stopPropagation(); viewLocationMap('${task.location}', '${task.name}')">
                             🗺️ View Map
                         </button>
-                        <button class="btn btn-primary" onclick="event.stopPropagation(); showToast('Getting directions...', 'info')">
+                        <button class="btn btn-primary" onclick="event.stopPropagation(); getDirections('${task.location}', '${task.name}')">
                             🧭 Directions
                         </button>
                     </div>
@@ -1527,8 +1527,8 @@
                     ${task.completed ? 
                         `<div style="font-size: 14px; color: #6b7280; margin-top: 12px;">Completed on ${task.completedAt}</div>` :
                         `<div class="card-actions">
-                            <button class="btn btn-secondary" onclick="event.stopPropagation(); showToast('Opening map...', 'info')">🗺️ View Map</button>
-                            <button class="btn btn-primary" onclick="event.stopPropagation(); showToast('Getting directions...', 'info')">🧭 Directions</button>
+                            <button class="btn btn-secondary" onclick="event.stopPropagation(); viewLocationMap('${task.location}', '${task.name}')">🗺️ View Map</button>
+                            <button class="btn btn-primary" onclick="event.stopPropagation(); getDirections('${task.location}', '${task.name}')">🧭 Directions</button>
                         </div>`
                     }
                 </div>
@@ -2589,6 +2589,375 @@
             showToast(`Grade ${grade} submitted successfully!`, 'success');
         }
 
+        // Map and Directions Functions
+        function viewLocationMap(location, taskName) {
+            // Create a comprehensive campus map modal
+            const mapModal = document.createElement('div');
+            mapModal.className = 'modal active';
+            mapModal.innerHTML = `
+                <div class="modal-content" style="max-width: 800px;">
+                    <div class="modal-header">
+                        <div class="modal-title">🗺️ Campus Map - ${location}</div>
+                        <button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <div style="background: #f0f9ff; border: 1px solid #0ea5e9; border-radius: 12px; padding: 16px; margin-bottom: 20px;">
+                            <div style="font-weight: 600; color: #0369a1; margin-bottom: 8px;">📍 ${taskName}</div>
+                            <div style="color: #0369a1;">Location: ${location}</div>
+                        </div>
+                        
+                        <div style="background: #f8fafc; border-radius: 12px; padding: 40px; text-align: center; border: 2px dashed #cbd5e1; margin-bottom: 20px;">
+                            <div style="font-size: 48px; margin-bottom: 16px;">🗺️</div>
+                            <div style="font-size: 18px; font-weight: 600; color: #374151; margin-bottom: 12px;">Interactive Campus Map</div>
+                            <div style="color: #6b7280; margin-bottom: 20px;">Detailed campus map showing ${location} and surrounding buildings</div>
+                            
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin: 20px 0;">
+                                <div style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px;">
+                                    <div style="font-weight: 600; color: #dc2626; margin-bottom: 8px;">📍 ${location}</div>
+                                    <div style="font-size: 14px; color: #6b7280;">Your destination</div>
+                                </div>
+                                <div style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px;">
+                                    <div style="font-weight: 600; color: #10b981; margin-bottom: 8px;">🚶 Walking Path</div>
+                                    <div style="font-size: 14px; color: #6b7280;">Recommended route</div>
+                                </div>
+                                <div style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px;">
+                                    <div style="font-weight: 600; color: #3b82f6; margin-bottom: 8px;">🅿️ Parking</div>
+                                    <div style="font-size: 14px; color: #6b7280;">Nearby parking areas</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                            <button class="btn btn-primary" onclick="getDirections('${location}', '${taskName}'); this.closest('.modal').remove();">
+                                🧭 Get Directions
+                            </button>
+                            <button class="btn btn-secondary" onclick="openExternalMap('${location}')">
+                                🌐 Open in Maps App
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(mapModal);
+            showToast(`Viewing map for ${location}`, 'info');
+        }
+
+        function getDirections(location, taskName) {
+            // Create a detailed directions modal
+            const directionsModal = document.createElement('div');
+            directionsModal.className = 'modal active';
+            
+            // Generate location-specific directions
+            const directions = getLocationDirections(location);
+            
+            directionsModal.innerHTML = `
+                <div class="modal-content" style="max-width: 600px;">
+                    <div class="modal-header">
+                        <div class="modal-title">🧭 Directions to ${location}</div>
+                        <button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <div style="background: #f0fdf4; border: 1px solid #10b981; border-radius: 12px; padding: 16px; margin-bottom: 20px;">
+                            <div style="font-weight: 600; color: #166534; margin-bottom: 8px;">🎯 ${taskName}</div>
+                            <div style="color: #166534;">Destination: ${location}</div>
+                            <div style="font-size: 14px; color: #166534; margin-top: 8px;">Estimated walking time: ${directions.walkTime}</div>
+                        </div>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <h4 style="color: #374151; margin-bottom: 16px;">📍 Step-by-Step Directions</h4>
+                            <div style="space-y: 12px;">
+                                ${directions.steps.map((step, index) => `
+                                    <div style="display: flex; gap: 12px; padding: 12px; background: #f8fafc; border-radius: 8px; margin-bottom: 8px;">
+                                        <div style="background: #dc2626; color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; flex-shrink: 0;">
+                                            ${index + 1}
+                                        </div>
+                                        <div style="flex: 1;">
+                                            <div style="font-weight: 500; color: #374151; margin-bottom: 4px;">${step.instruction}</div>
+                                            <div style="font-size: 14px; color: #6b7280;">${step.detail}</div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        
+                        <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 12px; padding: 16px; margin-bottom: 20px;">
+                            <div style="font-weight: 600; color: #92400e; margin-bottom: 8px;">💡 Helpful Tips</div>
+                            <ul style="margin: 0; padding-left: 20px; color: #92400e;">
+                                ${directions.tips.map(tip => `<li style="margin-bottom: 4px;">${tip}</li>`).join('')}
+                            </ul>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                            <button class="btn btn-primary" onclick="startNavigation('${location}')">
+                                🚶 Start Navigation
+                            </button>
+                            <button class="btn btn-secondary" onclick="openExternalMap('${location}')">
+                                🌐 Open in Maps App
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(directionsModal);
+            showToast(`Directions to ${location} loaded`, 'success');
+        }
+
+        function getLocationDirections(location) {
+            // Return location-specific directions
+            const directionsMap = {
+                'Campus Library': {
+                    walkTime: '5-7 minutes',
+                    steps: [
+                        { instruction: 'Exit current building', detail: 'Head towards the main campus quad' },
+                        { instruction: 'Walk north across the quad', detail: 'Pass by the student center on your right' },
+                        { instruction: 'Continue straight for 200 yards', detail: 'You\'ll see the library\'s distinctive red brick facade' },
+                        { instruction: 'Enter through main entrance', detail: 'Information desk is immediately to your left' }
+                    ],
+                    tips: [
+                        'Library is open 24/7 during exam periods',
+                        'Information desk staff can help with research questions',
+                        'Free WiFi and charging stations available throughout'
+                    ]
+                },
+                'Student Center': {
+                    walkTime: '3-5 minutes',
+                    steps: [
+                        { instruction: 'Head towards campus center', detail: 'Follow the main walkway from your current location' },
+                        { instruction: 'Look for the large modern building', detail: 'Student Center has floor-to-ceiling windows' },
+                        { instruction: 'Enter through any of the main entrances', detail: 'Information booth is in the central atrium' },
+                        { instruction: 'Explore dining, bookstore, and services', detail: 'All key services are on the ground floor' }
+                    ],
+                    tips: [
+                        'Dining hall accepts meal plans and cash',
+                        'Bookstore has textbooks and UA merchandise',
+                        'Student activities office can help you join clubs'
+                    ]
+                },
+                'Engineering Building': {
+                    walkTime: '8-10 minutes',
+                    steps: [
+                        { instruction: 'Head east from campus center', detail: 'Walk towards the engineering quad' },
+                        { instruction: 'Pass the science buildings', detail: 'Engineering building is the tallest in this area' },
+                        { instruction: 'Enter through the main lobby', detail: 'Computer labs are on floors 2 and 3' },
+                        { instruction: 'Take elevator to computer lab floor', detail: 'Lab access may require student ID card' }
+                    ],
+                    tips: [
+                        'Labs have specialized software for engineering courses',
+                        'Printing services available in the building',
+                        'Study rooms can be reserved online'
+                    ]
+                },
+                'Campus Bookstore': {
+                    walkTime: '4-6 minutes',
+                    steps: [
+                        { instruction: 'Walk to Student Center', detail: 'Bookstore is located within the Student Center' },
+                        { instruction: 'Enter Student Center main entrance', detail: 'Follow signs to bookstore' },
+                        { instruction: 'Bookstore is on the ground floor', detail: 'Large entrance with UA branding' },
+                        { instruction: 'Explore textbook and merchandise sections', detail: 'Textbook rental and purchase options available' }
+                    ],
+                    tips: [
+                        'Compare textbook rental vs. purchase prices',
+                        'Digital textbooks often available at lower cost',
+                        'Return rentals by the specified due date'
+                    ]
+                },
+                'Administration Building': {
+                    walkTime: '6-8 minutes',
+                    steps: [
+                        { instruction: 'Head towards the main campus entrance', detail: 'Administration building is near the front of campus' },
+                        { instruction: 'Look for the formal brick building', detail: 'Has columns and traditional architecture' },
+                        { instruction: 'Enter through main entrance', detail: 'Security desk will direct you to career center' },
+                        { instruction: 'Career center is typically on 2nd floor', detail: 'Take elevator or stairs to reach the office' }
+                    ],
+                    tips: [
+                        'Bring your resume for career counseling',
+                        'Schedule appointments online when possible',
+                        'Career fairs are held regularly in this building'
+                    ]
+                },
+                'Recreation Center': {
+                    walkTime: '7-9 minutes',
+                    steps: [
+                        { instruction: 'Head towards the athletic complex', detail: 'Recreation center is near the sports fields' },
+                        { instruction: 'Follow signs to "Rec Center"', detail: 'Large modern building with glass facade' },
+                        { instruction: 'Enter with student ID', detail: 'Swipe your student ID at the front desk' },
+                        { instruction: 'Explore gym, pool, and facilities', detail: 'Get a tour from staff if it\'s your first visit' }
+                    ],
+                    tips: [
+                        'Bring a towel and water bottle',
+                        'Peak hours are 4-7 PM on weekdays',
+                        'Group fitness classes require advance registration'
+                    ]
+                },
+                'Student Union': {
+                    walkTime: '4-6 minutes',
+                    steps: [
+                        { instruction: 'Walk towards central campus', detail: 'Student Union is adjacent to the Student Center' },
+                        { instruction: 'Look for the building with dining facilities', detail: 'Multiple restaurant options visible from outside' },
+                        { instruction: 'Enter through main dining entrance', detail: 'Meal plan office is near the entrance' },
+                        { instruction: 'Explore dining options and services', detail: 'Various food courts and dining halls available' }
+                    ],
+                    tips: [
+                        'Meal plans can be purchased or modified here',
+                        'Dining dollars work at all campus food locations',
+                        'Special dietary needs can be accommodated'
+                    ]
+                }
+            };
+
+            return directionsMap[location] || {
+                walkTime: '5-10 minutes',
+                steps: [
+                    { instruction: 'Head towards your destination', detail: 'Follow campus signs and ask for directions if needed' },
+                    { instruction: 'Look for building signs', detail: 'Most buildings have clear signage' },
+                    { instruction: 'Enter through main entrance', detail: 'Information desks can provide additional help' }
+                ],
+                tips: [
+                    'Campus maps are available at information kiosks',
+                    'Ask students or staff for directions if needed',
+                    'Most buildings are wheelchair accessible'
+                ]
+            };
+        }
+
+        function startNavigation(location) {
+            showToast(`Starting turn-by-turn navigation to ${location}...`, 'info');
+            
+            // Simulate navigation start
+            setTimeout(() => {
+                showToast('🧭 Navigation active - follow the highlighted path', 'success');
+            }, 1500);
+        }
+
+        function openExternalMap(location) {
+            // Create a comprehensive external map options modal
+            const mapOptionsModal = document.createElement('div');
+            mapOptionsModal.className = 'modal active';
+            mapOptionsModal.innerHTML = `
+                <div class="modal-content" style="max-width: 500px;">
+                    <div class="modal-header">
+                        <div class="modal-title">🌐 Open in External Map</div>
+                        <button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <div style="background: #f0f9ff; border: 1px solid #0ea5e9; border-radius: 12px; padding: 16px; margin-bottom: 20px;">
+                            <div style="font-weight: 600; color: #0369a1; margin-bottom: 8px;">📍 Destination</div>
+                            <div style="color: #0369a1;">${location}, University of Alabama</div>
+                        </div>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <h4 style="color: #374151; margin-bottom: 16px;">Choose Your Preferred Map App</h4>
+                            
+                            <div style="display: grid; gap: 12px;">
+                                <button class="btn btn-secondary" onclick="openInGoogleMaps('${location}')" style="display: flex; align-items: center; gap: 12px; text-align: left;">
+                                    <div style="font-size: 24px;">🗺️</div>
+                                    <div>
+                                        <div style="font-weight: 600;">Google Maps</div>
+                                        <div style="font-size: 14px; opacity: 0.8;">Most popular navigation app</div>
+                                    </div>
+                                </button>
+                                
+                                <button class="btn btn-secondary" onclick="openInAppleMaps('${location}')" style="display: flex; align-items: center; gap: 12px; text-align: left;">
+                                    <div style="font-size: 24px;">🍎</div>
+                                    <div>
+                                        <div style="font-weight: 600;">Apple Maps</div>
+                                        <div style="font-size: 14px; opacity: 0.8;">Default iOS navigation</div>
+                                    </div>
+                                </button>
+                                
+                                <button class="btn btn-secondary" onclick="openInWaze('${location}')" style="display: flex; align-items: center; gap: 12px; text-align: left;">
+                                    <div style="font-size: 24px;">🚗</div>
+                                    <div>
+                                        <div style="font-weight: 600;">Waze</div>
+                                        <div style="font-size: 14px; opacity: 0.8;">Real-time traffic updates</div>
+                                    </div>
+                                </button>
+                                
+                                <button class="btn btn-secondary" onclick="copyLocationAddress('${location}')" style="display: flex; align-items: center; gap: 12px; text-align: left;">
+                                    <div style="font-size: 24px;">📋</div>
+                                    <div>
+                                        <div style="font-weight: 600;">Copy Address</div>
+                                        <div style="font-size: 14px; opacity: 0.8;">Use in any navigation app</div>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 12px; padding: 16px;">
+                            <div style="font-weight: 600; color: #92400e; margin-bottom: 8px;">💡 Navigation Tip</div>
+                            <div style="font-size: 14px; color: #92400e;">External maps will open in a new tab/window and provide real-time GPS navigation to your destination.</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(mapOptionsModal);
+        }
+
+        function openInGoogleMaps(location) {
+            const query = encodeURIComponent(`${location}, University of Alabama, Tuscaloosa, AL`);
+            window.open(`https://www.google.com/maps/search/${query}`, '_blank', 'noopener,noreferrer');
+            showToast('Opening Google Maps in new tab...', 'info');
+            document.querySelector('.modal.active').remove();
+        }
+
+        function openInAppleMaps(location) {
+            const query = encodeURIComponent(`${location}, University of Alabama, Tuscaloosa, AL`);
+            window.open(`https://maps.apple.com/?q=${query}`, '_blank', 'noopener,noreferrer');
+            showToast('Opening Apple Maps in new tab...', 'info');
+            document.querySelector('.modal.active').remove();
+        }
+
+        function openInWaze(location) {
+            const query = encodeURIComponent(`${location}, University of Alabama, Tuscaloosa, AL`);
+            window.open(`https://waze.com/ul?q=${query}`, '_blank', 'noopener,noreferrer');
+            showToast('Opening Waze in new tab...', 'info');
+            document.querySelector('.modal.active').remove();
+        }
+
+        function copyLocationAddress(location) {
+            const fullAddress = `${location}, University of Alabama, Tuscaloosa, AL 35487`;
+            
+            // Try to copy to clipboard
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(fullAddress).then(() => {
+                    showToast('Address copied to clipboard!', 'success');
+                }).catch(() => {
+                    fallbackCopyAddress(fullAddress);
+                });
+            } else {
+                fallbackCopyAddress(fullAddress);
+            }
+            
+            document.querySelector('.modal.active').remove();
+        }
+
+        function fallbackCopyAddress(address) {
+            // Fallback copy method
+            const textArea = document.createElement('textarea');
+            textArea.value = address;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+                showToast('Address copied to clipboard!', 'success');
+            } catch (err) {
+                showToast('Could not copy address. Please note: ' + address, 'info');
+            }
+            
+            document.body.removeChild(textArea);
+        }
+
         function showToast(message, type = 'info') {
             const colors = {
                 success: '#10b981',
@@ -2632,5 +3001,5 @@
         // Initialize
         document.addEventListener('DOMContentLoaded', initApp);
     </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99a8ae11f3a0bd12',t:'MTc2MjQ3NDk4NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99a98ce2236f41c4',t:'MTc2MjQ4NDExMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
