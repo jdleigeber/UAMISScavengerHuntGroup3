@@ -861,25 +861,48 @@
       </div>
      </div><!-- Team View -->
      <div id="teamView" class="hidden">
-      <h2 style="margin-bottom: 24px; color: #1f2937;">Select Your Team</h2>
-      <div class="nav-tabs" style="margin-bottom: 32px;"><button class="nav-tab active" onclick="showGroup(1)">Group 1</button> <button class="nav-tab" onclick="showGroup(2)">Group 2</button> <button class="nav-tab" onclick="showGroup(3)">Group 3</button>
-      </div>
-      <div class="team-grid" id="teamMembers"><!-- Populated by JavaScript -->
-      </div>
-      <div class="flex gap-16" id="teamActions"><button class="btn btn-primary" style="flex: 1;" onclick="selectTeam()" id="joinTeamBtn"> ✓ Join This Team </button> <button class="btn btn-secondary" style="flex: 1;" onclick="randomAssign()" id="randomAssignBtn"> 🎲 Random Assignment </button>
-      </div>
-      <div id="teamAssignedMessage" class="hidden" style="background: #f0fdf4; border: 2px solid #10b981; border-radius: 16px; padding: 24px; text-align: center;">
-       <div style="font-size: 48px; margin-bottom: 16px;">
-        ✅
+      <div id="teamSelectionView">
+       <h2 style="margin-bottom: 24px; color: #1f2937;">Choose Your Team</h2>
+       <div style="background: #f0f9ff; border: 1px solid #0ea5e9; border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+        <div style="font-weight: 600; color: #0369a1; margin-bottom: 8px;">
+         👥 Team Selection
+        </div>
+        <div style="color: #0369a1; font-size: 14px;">
+         Browse available teams and join one that fits your schedule and preferences. You can see current members and availability.
+        </div>
        </div>
-       <div style="font-size: 20px; font-weight: 700; color: #166534; margin-bottom: 8px;">
-        Team Assignment Complete!
+       <div class="team-grid" id="teamMembers"><!-- Populated by JavaScript -->
        </div>
-       <div style="font-size: 16px; color: #166534; margin-bottom: 16px;" id="assignedTeamInfo">
-        You are now part of Group 1
+       <div class="flex gap-16" id="teamActions"><button class="btn btn-primary" style="flex: 1;" onclick="joinSelectedTeam()" id="joinTeamBtn"> ✓ Join Selected Team </button> <button class="btn btn-secondary" style="flex: 1;" onclick="showModal('createStudentTeamModal')" id="createTeamBtn"> ➕ Create New Team </button> <button class="btn btn-secondary" style="flex: 1;" onclick="randomAssign()" id="randomAssignBtn"> 🎲 Random Assignment </button>
        </div>
-       <div style="font-size: 14px; color: #6b7280;">
-        You can now complete tasks with your team members
+      </div>
+      <div id="teamAssignedView" class="hidden">
+       <h2 style="margin-bottom: 24px; color: #1f2937;">Your Team</h2>
+       <div style="background: #f0fdf4; border: 2px solid #10b981; border-radius: 16px; padding: 24px; text-align: center; margin-bottom: 24px;">
+        <div style="font-size: 48px; margin-bottom: 16px;">
+         ✅
+        </div>
+        <div style="font-size: 20px; font-weight: 700; color: #166534; margin-bottom: 8px;">
+         Team Assignment Complete!
+        </div>
+        <div style="font-size: 16px; color: #166534; margin-bottom: 16px;" id="assignedTeamInfo">
+         You are now part of Team Alpha
+        </div>
+        <div style="font-size: 14px; color: #6b7280;">
+         You can now complete tasks with your team members
+        </div>
+       </div>
+       <div class="card">
+        <div class="card-title" id="currentTeamName">
+         Team Alpha
+        </div>
+        <div class="card-subtitle">
+         Team Members
+        </div>
+        <div class="team-grid" id="currentTeamMembers"><!-- Populated by JavaScript -->
+        </div>
+        <div class="card-actions" style="margin-top: 20px;" id="teamManagementActions"><button class="btn btn-secondary" onclick="leaveTeam()" style="color: #dc2626;"> 🚪 Leave Team </button>
+        </div>
        </div>
       </div>
      </div><!-- Calendar View -->
@@ -908,13 +931,18 @@
       <h2 style="margin-bottom: 24px; color: #1f2937;">Profile Settings</h2>
       <div class="card">
        <div class="form-group"><label class="form-label">Full Name</label>
-        <div class="form-input" style="background: #f8fafc; color: #6b7280;">
+        <div class="form-input" style="background: #f8fafc; color: #6b7280;" id="profileName">
          Sarah Mitchell
         </div>
        </div>
        <div class="form-group"><label class="form-label">Student ID</label>
-        <div class="form-input" style="background: #f8fafc; color: #6b7280;">
+        <div class="form-input" style="background: #f8fafc; color: #6b7280;" id="profileStudentId">
          SM001234
+        </div>
+       </div>
+       <div class="form-group"><label class="form-label">Email</label>
+        <div class="form-input" style="background: #f8fafc; color: #6b7280;" id="profileEmail">
+         student@ua.edu
         </div>
        </div>
        <div class="form-group"><label class="form-label">Course</label>
@@ -1198,6 +1226,49 @@
     <div class="form-group"><label class="form-label">Maximum Members</label> <select class="form-input" id="maxMembers"> <option value="3">3 members</option> <option value="4" selected>4 members</option> <option value="5">5 members</option> <option value="6">6 members</option> </select>
     </div><button class="btn btn-primary btn-full" onclick="createNewTeam()"> Create Team </button>
    </div>
+  </div><!-- Student Create Team Modal -->
+  <div id="createStudentTeamModal" class="modal">
+   <div class="modal-content">
+    <div class="modal-header">
+     <div class="modal-title">
+      Create Your Own Team
+     </div><button class="close-btn" onclick="closeModal('createStudentTeamModal')">×</button>
+    </div>
+    <div style="background: #f0f9ff; border: 1px solid #0ea5e9; border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+     <div style="font-weight: 600; color: #0369a1; margin-bottom: 8px;">
+      👥 Create Your Team
+     </div>
+     <div style="color: #0369a1; font-size: 14px;">
+      Start your own team and invite other students to join you for the scavenger hunt!
+     </div>
+    </div>
+    <div class="form-group"><label class="form-label">Team Name</label> <input type="text" class="form-input" id="studentTeamName" placeholder="Enter a creative team name">
+    </div>
+    <div class="form-group"><label class="form-label">Team Description (Optional)</label> <textarea class="form-input" rows="3" id="studentTeamDescription" placeholder="Describe your team's goals or personality..."></textarea>
+    </div>
+    <div class="form-group"><label class="form-label">Maximum Team Size</label> <select class="form-input" id="studentMaxMembers"> <option value="3">3 members (small team)</option> <option value="4" selected>4 members (recommended)</option> <option value="5">5 members (large team)</option> </select>
+    </div>
+    <div class="form-group"><label class="form-label">Team Privacy</label>
+     <div style="margin-top: 8px;"><label style="display: flex; align-items: center; margin-bottom: 8px; cursor: pointer; padding: 8px; border-radius: 8px; transition: background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'"> <input type="radio" name="teamPrivacy" value="open" checked style="margin-right: 12px; transform: scale(1.2);">
+       <div>
+        <div style="font-weight: 500;">
+         🌐 Open Team
+        </div>
+        <div style="font-size: 14px; color: #6b7280;">
+         Anyone can join your team
+        </div>
+       </div></label> <label style="display: flex; align-items: center; cursor: pointer; padding: 8px; border-radius: 8px; transition: background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'"> <input type="radio" name="teamPrivacy" value="invite" style="margin-right: 12px; transform: scale(1.2);">
+       <div>
+        <div style="font-weight: 500;">
+         🔒 Invite Only
+        </div>
+        <div style="font-size: 14px; color: #6b7280;">
+         You'll invite specific students to join
+        </div>
+       </div></label>
+     </div>
+    </div><button class="btn btn-primary btn-full" onclick="createStudentTeam()"> ✨ Create My Team </button>
+   </div>
   </div><!-- Edit Team Modal -->
   <div id="editTeamModal" class="modal">
    <div class="modal-content">
@@ -1217,6 +1288,42 @@
     <div class="flex gap-16"><button class="btn btn-secondary" onclick="closeModal('editTeamModal')" style="flex: 1;"> Cancel </button> <button class="btn btn-primary" onclick="saveTeamChanges()" style="flex: 1;"> Save Changes </button>
     </div>
    </div>
+  </div><!-- Invite Student Modal -->
+  <div id="inviteStudentModal" class="modal">
+   <div class="modal-content">
+    <div class="modal-header">
+     <div class="modal-title">
+      Invite Students to Your Team
+     </div><button class="close-btn" onclick="closeModal('inviteStudentModal')">×</button>
+    </div>
+    <div style="background: #f0fdf4; border: 1px solid #10b981; border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+     <div style="font-weight: 600; color: #166534; margin-bottom: 8px;">
+      👥 Team Invitation
+     </div>
+     <div style="color: #166534; font-size: 14px;">
+      Invite other students to join your team for the scavenger hunt!
+     </div>
+    </div>
+    <div class="form-group"><label class="form-label">Invite by Student Name or Email</label> <input type="text" class="form-input" id="inviteStudentInput" placeholder="Enter student name or email address">
+     <div style="font-size: 14px; color: #6b7280; margin-top: 8px;">
+      Students will receive an invitation to join your team
+     </div>
+    </div>
+    <div class="form-group"><label class="form-label">Personal Message (Optional)</label> <textarea class="form-input" rows="3" id="inviteMessage" placeholder="Add a personal message to your invitation..."></textarea>
+    </div>
+    <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 12px; padding: 16px; margin-bottom: 20px;">
+     <div style="font-weight: 600; color: #92400e; margin-bottom: 8px;">
+      📧 How Invitations Work
+     </div>
+     <ul style="margin: 0; padding-left: 20px; color: #92400e; font-size: 14px;">
+      <li>Students receive an email invitation</li>
+      <li>They can accept or decline the invitation</li>
+      <li>Team capacity: <span id="teamCapacityInfo">3/4 members</span></li>
+     </ul>
+    </div>
+    <div class="flex gap-16"><button class="btn btn-secondary" onclick="closeModal('inviteStudentModal')" style="flex: 1;"> Cancel </button> <button class="btn btn-primary" onclick="sendTeamInvitation()" style="flex: 1;"> 📧 Send Invitation </button>
+    </div>
+   </div>
   </div><!-- Grade Submission Modal -->
   <div id="gradeSubmissionModal" class="modal">
    <div class="modal-content">
@@ -1227,10 +1334,7 @@
     </div>
     <div id="submissionDetails"><!-- Populated by JavaScript -->
     </div>
-    <div class="form-group"><label class="form-label">Grade (0-100)</label> <input type="range" class="grade-slider" min="0" max="100" value="85" id="gradeSlider" oninput="updateGradeValue()">
-     <div style="text-align: center; font-weight: 600; color: #dc2626; font-size: 24px;" id="gradeValue">
-      85
-     </div>
+    <div class="form-group"><label class="form-label">Grade (0-100)</label> <input type="number" class="form-input" min="0" max="100" value="85" placeholder="Enter grade (0-100)" id="gradeInput" style="text-align: center; font-weight: 600; font-size: 24px;">
     </div>
     <div class="form-group"><label class="form-label">Feedback</label> <textarea class="form-input" rows="4" id="gradeFeedback" placeholder="Provide detailed feedback for the student..."></textarea>
     </div>
@@ -1257,6 +1361,13 @@
         let hasJoinedTeam = false;
         let userTeamInfo = null;
         let currentUserName = 'Student User';
+        let currentUserInitials = 'SU';
+        let currentUserInfo = {
+            name: 'Student User',
+            initials: 'SU',
+            studentId: 'STU001',
+            email: 'student@ua.edu'
+        };
 
         // Mock data
         const mockTasks = [
@@ -1267,6 +1378,75 @@
             { id: 5, name: "Career Center Connection", description: "Visit the career center and learn about services", location: "Administration Building", completed: false },
             { id: 6, name: "Recreation Facilities", description: "Explore the gym and recreational facilities", location: "Recreation Center", completed: false },
             { id: 7, name: "Dining Hall Experience", description: "Visit the main dining hall and meal plan office", location: "Student Union", completed: false }
+        ];
+
+        // Available teams data
+        let availableTeamsData = [
+            {
+                id: 1,
+                name: "Team Alpha",
+                color: "dc2626",
+                colorDark: "b91c1c",
+                maxMembers: 4,
+                members: [
+                    { name: "James Anderson", initials: "JA", role: "Member" },
+                    { name: "Emily Rodriguez", initials: "ER", role: "Member" }
+                ]
+            },
+            {
+                id: 2,
+                name: "Team Beta",
+                color: "10b981",
+                colorDark: "059669",
+                maxMembers: 4,
+                members: [
+                    { name: "Alex Brown", initials: "AB", role: "Member" },
+                    { name: "Chris Davis", initials: "CD", role: "Member" },
+                    { name: "Emma Foster", initials: "EF", role: "Member" }
+                ]
+            },
+            {
+                id: 3,
+                name: "Team Gamma",
+                color: "3b82f6",
+                colorDark: "2563eb",
+                maxMembers: 4,
+                members: [
+                    { name: "Grace Hill", initials: "GH", role: "Member" }
+                ]
+            },
+            {
+                id: 4,
+                name: "Team Delta",
+                color: "f59e0b",
+                colorDark: "d97706",
+                maxMembers: 4,
+                members: [
+                    { name: "Ian Johnson", initials: "IJ", role: "Member" },
+                    { name: "Kate Lewis", initials: "KL", role: "Member" },
+                    { name: "Mark Nelson", initials: "MN", role: "Member" },
+                    { name: "Oliver Parker", initials: "OP", role: "Member" }
+                ]
+            },
+            {
+                id: 5,
+                name: "Team Echo",
+                color: "8b5cf6",
+                colorDark: "7c3aed",
+                maxMembers: 4,
+                members: []
+            },
+            {
+                id: 6,
+                name: "Team Foxtrot",
+                color: "ef4444",
+                colorDark: "dc2626",
+                maxMembers: 4,
+                members: [
+                    { name: "Quinn Roberts", initials: "QR", role: "Member" },
+                    { name: "Riley Smith", initials: "RS", role: "Member" }
+                ]
+            }
         ];
 
         // Shared submissions data for TA interface
@@ -1392,8 +1572,15 @@
                     }
                 }
                 
-                // Store current user name globally
+                // Store current user info globally
                 currentUserName = userName;
+                currentUserInitials = userInitials;
+                currentUserInfo = {
+                    name: userName,
+                    initials: userInitials,
+                    studentId: username.toUpperCase() + '001',
+                    email: username.toLowerCase() + '@ua.edu'
+                };
                 
                 // Update user display and progress
                 document.getElementById('userAvatar').textContent = userInitials;
@@ -1766,7 +1953,7 @@
                     // Add to submissions data
                     submissionsData.push(newSubmission);
                     
-                    // Update progress display
+                    // Update progress display immediately
                     updateProgressDisplay();
                     
                     // Reset photo state
@@ -1775,8 +1962,22 @@
                     
                     showToast(`Task submitted successfully with photo: ${selectedFile.name}!`, 'success');
                     showTab('tasks');
-                    populateTaskLists();
                     populateAllTasks();
+                    
+                    // Show completion celebration for high progress
+                    const completedCount = mockTasks.filter(task => task.completed).length;
+                    const totalCount = mockTasks.length;
+                    const progress = Math.round((completedCount / totalCount) * 100);
+                    
+                    if (progress >= 100) {
+                        setTimeout(() => {
+                            showCompletionCelebration();
+                        }, 1000);
+                    } else if (progress >= 75) {
+                        setTimeout(() => {
+                            showToast(`🎉 Great progress! You're ${progress}% complete!`, 'success');
+                        }, 1500);
+                    }
                 }
             }, 1500); // Simulate upload time
         }
@@ -1803,89 +2004,190 @@
             }
         }
 
-        // Team functions
+        // Team functions (legacy - keeping for compatibility)
         function showGroup(groupNum) {
+            // This function is no longer used but kept for compatibility
             selectedGroup = groupNum;
-            document.querySelectorAll('#teamView .nav-tab').forEach(t => t.classList.remove('active'));
-            event.currentTarget.classList.add('active');
-            populateTeamMembers();
         }
 
         function populateTeamMembers() {
             const container = document.getElementById('teamMembers');
-            let membersToShow = [...mockMembers];
             
-            // If user has joined a team and we're viewing their group, add them to the display
-            if (hasJoinedTeam && selectedGroup === userTeamInfo.group) {
-                const currentUserInitials = document.getElementById('userAvatar').textContent;
-                const currentUserName = getCurrentUserName();
-                
-                // Check if user is not already in the mock members list
-                const userExists = membersToShow.some(member => member.initials === currentUserInitials);
-                if (!userExists) {
-                    membersToShow.push({
-                        name: currentUserName,
-                        role: "Member",
-                        initials: currentUserInitials,
-                        isCurrentUser: true
-                    });
-                }
+            if (hasJoinedTeam) {
+                // Show user's current team
+                const teamMembers = userTeamInfo.members;
+                container.innerHTML = teamMembers.map((member, index) => `
+                    <div class="team-member ${member.isCurrentUser ? 'current-user' : ''}" onclick="selectMember(${index})">
+                        <div class="member-avatar ${member.isCurrentUser ? 'current-user-avatar' : ''}">${member.initials}</div>
+                        <div class="member-name">${member.name} ${member.isCurrentUser ? '(You)' : ''}</div>
+                        <div class="member-role">${member.role}</div>
+                    </div>
+                `).join('');
+            } else {
+                // Show available teams for selection
+                const availableTeams = getAvailableTeams();
+                container.innerHTML = availableTeams.map((team, index) => `
+                    <div class="team-member ${selectedGroup === team.id ? 'selected' : ''}" onclick="selectTeamForJoining(${team.id})">
+                        <div class="member-avatar" style="background: linear-gradient(135deg, #${team.color}, #${team.colorDark});">${team.name.charAt(0)}</div>
+                        <div class="member-name">${team.name}</div>
+                        <div class="member-role">${team.members.length}/${team.maxMembers} members</div>
+                        <div style="font-size: 12px; color: #6b7280; margin-top: 4px;">
+                            ${team.members.length < team.maxMembers ? '✅ Available' : '❌ Full'}
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function getAvailableTeams() {
+            return availableTeamsData;
+        }
+
+        function selectTeamForJoining(teamId) {
+            selectedGroup = teamId;
+            
+            // Update visual selection
+            document.querySelectorAll('.team-member').forEach(member => {
+                member.classList.remove('selected');
+            });
+            event.currentTarget.classList.add('selected');
+            
+            // Update join button text
+            const selectedTeam = availableTeamsData.find(team => team.id === teamId);
+            const joinBtn = document.getElementById('joinTeamBtn');
+            
+            if (selectedTeam.members.length >= selectedTeam.maxMembers) {
+                joinBtn.textContent = '❌ Team Full';
+                joinBtn.disabled = true;
+                joinBtn.style.opacity = '0.5';
+            } else {
+                joinBtn.textContent = `✓ Join ${selectedTeam.name}`;
+                joinBtn.disabled = false;
+                joinBtn.style.opacity = '1';
+            }
+        }
+
+        function joinSelectedTeam() {
+            const selectedTeam = availableTeamsData.find(team => team.id === selectedGroup);
+            if (!selectedTeam) {
+                showToast('Please select a team first', 'error');
+                return;
             }
             
-            container.innerHTML = membersToShow.map((member, index) => `
-                <div class="team-member ${index === 0 ? 'selected' : ''} ${member.isCurrentUser ? 'current-user' : ''}" onclick="selectMember(${index})">
-                    <div class="member-avatar ${member.isCurrentUser ? 'current-user-avatar' : ''}">${member.initials}</div>
-                    <div class="member-name">${member.name} ${member.isCurrentUser ? '(You)' : ''}</div>
-                    <div class="member-role">${member.role}</div>
-                </div>
-            `).join('');
+            if (selectedTeam.members.length >= selectedTeam.maxMembers) {
+                showToast('This team is full. Please select another team.', 'error');
+                return;
+            }
+            
+            // Add current user to the team
+            selectedTeam.members.push({
+                name: currentUserInfo.name,
+                initials: currentUserInfo.initials,
+                role: "Member",
+                isCurrentUser: true
+            });
+            
+            // Set user team info
+            hasJoinedTeam = true;
+            userTeamInfo = {
+                id: selectedTeam.id,
+                name: selectedTeam.name,
+                members: selectedTeam.members,
+                joinedAt: new Date().toISOString()
+            };
+            
+            updateTeamViewState();
+            showToast(`Successfully joined ${selectedTeam.name}!`, 'success');
+            
+            // Update task detail view if currently viewing a task
+            if (currentTask) {
+                updateTaskDetailMembers();
+            }
         }
 
         function updateTeamViewState() {
             if (hasJoinedTeam) {
-                // Hide team selection buttons and show confirmation message
-                document.getElementById('teamActions').classList.add('hidden');
-                document.getElementById('teamAssignedMessage').classList.remove('hidden');
-                document.getElementById('assignedTeamInfo').textContent = `You are part of Group ${userTeamInfo.group}`;
+                // Hide selection view and show assigned view
+                document.getElementById('teamSelectionView').classList.add('hidden');
+                document.getElementById('teamAssignedView').classList.remove('hidden');
                 
-                // Keep team member selection enabled for viewing
-                document.querySelectorAll('.team-member').forEach(member => {
-                    member.style.pointerEvents = 'auto';
-                    member.style.opacity = '1';
-                });
+                // Update assigned team info
+                document.getElementById('assignedTeamInfo').textContent = `You are now part of ${userTeamInfo.name}`;
+                document.getElementById('currentTeamName').textContent = userTeamInfo.name;
                 
-                // Keep group tabs enabled for viewing
-                document.querySelectorAll('#teamView .nav-tab').forEach(tab => {
-                    tab.style.pointerEvents = 'auto';
-                    tab.style.opacity = '1';
-                });
+                // Populate current team members
+                const container = document.getElementById('currentTeamMembers');
+                container.innerHTML = userTeamInfo.members.map((member, index) => `
+                    <div class="team-member ${member.isCurrentUser ? 'current-user' : ''}">
+                        <div class="member-avatar ${member.isCurrentUser ? 'current-user-avatar' : ''}">${member.initials}</div>
+                        <div class="member-name">${member.name} ${member.isCurrentUser ? '(You)' : ''}</div>
+                        <div class="member-role">${member.role}</div>
+                        ${userTeamInfo.isLeader && !member.isCurrentUser ? `
+                            <button class="btn btn-secondary" onclick="removeMemberFromTeam('${member.name}')" style="padding: 4px 8px; font-size: 12px; color: #dc2626; margin-top: 8px;">
+                                Remove
+                            </button>
+                        ` : ''}
+                    </div>
+                `).join('');
                 
-                // Set the correct group tab as active
-                document.querySelectorAll('#teamView .nav-tab').forEach((tab, index) => {
-                    tab.classList.remove('active');
-                    if (index === userTeamInfo.group - 1) {
-                        tab.classList.add('active');
-                    }
-                });
-                
-                // Update team display to show current user
-                populateTeamMembers();
+                // Update team management actions based on leadership
+                const actionsContainer = document.getElementById('teamManagementActions');
+                if (userTeamInfo.isLeader) {
+                    actionsContainer.innerHTML = `
+                        <button class="btn btn-primary" onclick="showModal('inviteStudentModal')" style="margin-right: 12px;">
+                            ➕ Invite Students
+                        </button>
+                        <button class="btn btn-secondary" onclick="editTeamSettings()" style="margin-right: 12px;">
+                            ⚙️ Team Settings
+                        </button>
+                        <button class="btn btn-secondary" onclick="leaveTeam()" style="color: #dc2626;">
+                            🚪 Leave Team
+                        </button>
+                    `;
+                } else {
+                    actionsContainer.innerHTML = `
+                        <button class="btn btn-secondary" onclick="leaveTeam()" style="color: #dc2626;">
+                            🚪 Leave Team
+                        </button>
+                    `;
+                }
             } else {
-                // Show team selection buttons and hide confirmation message
-                document.getElementById('teamActions').classList.remove('hidden');
-                document.getElementById('teamAssignedMessage').classList.add('hidden');
+                // Show selection view and hide assigned view
+                document.getElementById('teamSelectionView').classList.remove('hidden');
+                document.getElementById('teamAssignedView').classList.add('hidden');
                 
-                // Enable team member selection
-                document.querySelectorAll('.team-member').forEach(member => {
-                    member.style.pointerEvents = 'auto';
-                    member.style.opacity = '1';
-                });
-                
-                // Enable group tabs
-                document.querySelectorAll('#teamView .nav-tab').forEach(tab => {
-                    tab.style.pointerEvents = 'auto';
-                    tab.style.opacity = '1';
-                });
+                // Reset join button
+                const joinBtn = document.getElementById('joinTeamBtn');
+                joinBtn.textContent = '✓ Join Selected Team';
+                joinBtn.disabled = false;
+                joinBtn.style.opacity = '1';
+            }
+        }
+
+        function leaveTeam() {
+            if (!hasJoinedTeam || !userTeamInfo) return;
+            
+            // Remove user from team
+            const team = availableTeamsData.find(t => t.id === userTeamInfo.id);
+            if (team) {
+                const userIndex = team.members.findIndex(member => member.isCurrentUser);
+                if (userIndex > -1) {
+                    team.members.splice(userIndex, 1);
+                }
+            }
+            
+            // Reset user state
+            hasJoinedTeam = false;
+            userTeamInfo = null;
+            selectedGroup = 1;
+            
+            updateTeamViewState();
+            populateTeamMembers();
+            showToast('Left team successfully. You can now join a different team.', 'info');
+            
+            // Update task detail view if currently viewing a task
+            if (currentTask) {
+                updateTaskDetailMembers();
             }
         }
 
@@ -1895,27 +2197,8 @@
         }
 
         function selectTeam() {
-            if (hasJoinedTeam) {
-                showToast('You have already joined a team!', 'error');
-                return;
-            }
-            
-            hasJoinedTeam = true;
-            userTeamInfo = {
-                group: selectedGroup,
-                members: [...mockMembers],
-                joinedAt: new Date().toISOString()
-            };
-            
-            // Update team view state
-            updateTeamViewState();
-            
-            showToast(`Successfully joined Group ${selectedGroup}!`, 'success');
-            
-            // Update task detail view if currently viewing a task
-            if (currentTask) {
-                updateTaskDetailMembers();
-            }
+            // Legacy function - redirects to new team selection
+            joinSelectedTeam();
         }
 
         function randomAssign() {
@@ -1924,43 +2207,118 @@
                 return;
             }
             
-            const randomGroup = Math.floor(Math.random() * 3) + 1;
-            selectedGroup = randomGroup;
-            hasJoinedTeam = true;
-            userTeamInfo = {
-                group: randomGroup,
-                members: [...mockMembers],
-                joinedAt: new Date().toISOString()
-            };
+            // Find available teams (not full)
+            const availableTeams = availableTeamsData.filter(team => team.members.length < team.maxMembers);
             
-            // Update group tab selection to show the randomly assigned group
-            document.querySelectorAll('#teamView .nav-tab').forEach((tab, index) => {
-                tab.classList.remove('active');
-                if (index === randomGroup - 1) {
-                    tab.classList.add('active');
-                }
-            });
-            
-            // Update team view state
-            updateTeamViewState();
-            
-            showToast(`Randomly assigned to Group ${randomGroup}!`, 'success');
-            
-            // Update task detail view if currently viewing a task
-            if (currentTask) {
-                updateTaskDetailMembers();
+            if (availableTeams.length === 0) {
+                showToast('No teams available for random assignment', 'error');
+                return;
             }
+            
+            // Select random available team
+            const randomTeam = availableTeams[Math.floor(Math.random() * availableTeams.length)];
+            selectedGroup = randomTeam.id;
+            
+            // Join the randomly selected team
+            joinSelectedTeam();
+            
+            showToast(`Randomly assigned to ${randomTeam.name}!`, 'success');
         }
 
         // Calendar functions
         function updateAvailability() {
             const date = document.getElementById('availabilityDate').value;
-            if (date) {
-                closeModal('availabilityModal');
-                showToast('Availability updated successfully!', 'success');
-            } else {
+            const checkboxes = document.querySelectorAll('#availabilityModal input[type="checkbox"]:checked');
+            
+            if (!date) {
                 showToast('Please select a date', 'error');
+                return;
             }
+            
+            if (checkboxes.length === 0) {
+                showToast('Please select at least one time slot', 'error');
+                return;
+            }
+            
+            const selectedTimes = Array.from(checkboxes).map(cb => cb.nextElementSibling.textContent);
+            const formattedDate = new Date(date).toLocaleDateString('en-US', { 
+                weekday: 'long',
+                month: 'long', 
+                day: 'numeric', 
+                year: 'numeric' 
+            });
+            
+            // Store availability data
+            const availabilityData = {
+                date: formattedDate,
+                timeSlots: selectedTimes,
+                submittedAt: new Date().toISOString()
+            };
+            
+            // Update calendar view with new availability
+            updateCalendarWithAvailability(availabilityData);
+            
+            closeModal('availabilityModal');
+            showToast(`Availability set for ${formattedDate} (${selectedTimes.length} time slots)`, 'success');
+            
+            // Clear form
+            document.getElementById('availabilityDate').value = '';
+            checkboxes.forEach(cb => cb.checked = false);
+        }
+
+        function updateCalendarWithAvailability(data) {
+            // Add availability display to calendar view
+            const calendarView = document.getElementById('calendarView');
+            let availabilitySection = calendarView.querySelector('#availabilityDisplay');
+            
+            if (!availabilitySection) {
+                availabilitySection = document.createElement('div');
+                availabilitySection.id = 'availabilityDisplay';
+                availabilitySection.innerHTML = '<h3 style="margin: 24px 0 16px 0; color: #1f2937;">📅 Your Availability</h3>';
+                calendarView.appendChild(availabilitySection);
+            }
+            
+            const availabilityCard = document.createElement('div');
+            availabilityCard.className = 'card';
+            availabilityCard.style.marginBottom = '16px';
+            availabilityCard.innerHTML = `
+                <div class="card-title">✅ ${data.date}</div>
+                <div class="card-subtitle">${data.timeSlots.length} time slots available</div>
+                <div class="card-content">
+                    <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px;">
+                        ${data.timeSlots.map(slot => `
+                            <span style="background: #dcfce7; color: #166534; padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: 500;">
+                                ${slot}
+                            </span>
+                        `).join('')}
+                    </div>
+                </div>
+                <div class="card-actions">
+                    <button class="btn btn-secondary" onclick="editAvailability('${data.date}')" style="padding: 8px 16px; font-size: 14px;">
+                        ✏️ Edit
+                    </button>
+                    <button class="btn btn-secondary" onclick="removeAvailability('${data.date}')" style="padding: 8px 16px; font-size: 14px; color: #dc2626;">
+                        🗑️ Remove
+                    </button>
+                </div>
+            `;
+            
+            availabilitySection.appendChild(availabilityCard);
+        }
+
+        function editAvailability(date) {
+            showModal('availabilityModal');
+            showToast(`Editing availability for ${date}`, 'info');
+        }
+
+        function removeAvailability(date) {
+            const availabilityCards = document.querySelectorAll('#availabilityDisplay .card');
+            availabilityCards.forEach(card => {
+                if (card.querySelector('.card-title').textContent.includes(date)) {
+                    card.remove();
+                }
+            });
+            showToast(`Availability removed for ${date}`, 'info');
         }
 
         function populateVoteOptions() {
@@ -1998,8 +2356,129 @@
         }
 
         function saveVotes() {
+            if (selectedVotes.length === 0) {
+                showToast('Please select at least one time slot to vote for', 'error');
+                return;
+            }
+            
+            const selectedOptions = selectedVotes.map(index => mockVoteOptions[index]);
+            
+            // Update vote percentages (simulate other team members' votes)
+            selectedOptions.forEach(option => {
+                option.percentage = Math.min(100, option.percentage + Math.floor(Math.random() * 15) + 5);
+            });
+            
+            // Store voting data
+            const voteData = {
+                selectedSlots: selectedOptions.map(opt => `${opt.day} ${opt.time}`),
+                submittedAt: new Date().toISOString()
+            };
+            
+            // Update calendar view with voting results
+            updateCalendarWithVotes(voteData);
+            
             closeModal('votingModal');
-            showToast(`Selected ${selectedVotes.length} time slots!`, 'success');
+            showToast(`Voted for ${selectedVotes.length} time slots! Results updated.`, 'success');
+            
+            // Clear selections
+            selectedVotes = [];
+        }
+
+        function updateCalendarWithVotes(data) {
+            const calendarView = document.getElementById('calendarView');
+            let votingSection = calendarView.querySelector('#votingResults');
+            
+            if (!votingSection) {
+                votingSection = document.createElement('div');
+                votingSection.id = 'votingResults';
+                votingSection.innerHTML = '<h3 style="margin: 24px 0 16px 0; color: #1f2937;">🗳️ Your Votes</h3>';
+                calendarView.appendChild(votingSection);
+            }
+            
+            const voteCard = document.createElement('div');
+            voteCard.className = 'card';
+            voteCard.style.marginBottom = '16px';
+            voteCard.innerHTML = `
+                <div class="card-title">✅ Votes Submitted</div>
+                <div class="card-subtitle">${data.selectedSlots.length} time slots voted for</div>
+                <div class="card-content">
+                    <div style="margin-top: 12px;">
+                        ${data.selectedSlots.map(slot => `
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: #f0fdf4; border-radius: 8px; margin-bottom: 8px; border: 1px solid #dcfce7;">
+                                <span style="font-weight: 500;">${slot}</span>
+                                <span style="color: #10b981; font-weight: 600;">✓ Voted</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                <div class="card-actions">
+                    <button class="btn btn-secondary" onclick="changeVotes()" style="padding: 8px 16px; font-size: 14px;">
+                        🔄 Change Votes
+                    </button>
+                    <button class="btn btn-primary" onclick="viewVotingResults()" style="padding: 8px 16px; font-size: 14px;">
+                        📊 View Results
+                    </button>
+                </div>
+            `;
+            
+            votingSection.appendChild(voteCard);
+        }
+
+        function changeVotes() {
+            showModal('votingModal');
+            showToast('You can now change your votes', 'info');
+        }
+
+        function viewVotingResults() {
+            // Create voting results modal
+            const resultsModal = document.createElement('div');
+            resultsModal.className = 'modal active';
+            resultsModal.innerHTML = `
+                <div class="modal-content" style="max-width: 600px;">
+                    <div class="modal-header">
+                        <div class="modal-title">📊 Team Voting Results</div>
+                        <button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <div style="background: #f0f9ff; border: 1px solid #0ea5e9; border-radius: 12px; padding: 16px; margin-bottom: 20px;">
+                            <div style="font-weight: 600; color: #0369a1; margin-bottom: 8px;">🎯 Most Popular Times</div>
+                            <div style="color: #0369a1;">Based on all team member votes</div>
+                        </div>
+                        
+                        <div style="margin-bottom: 20px;">
+                            ${mockVoteOptions
+                                .sort((a, b) => b.percentage - a.percentage)
+                                .slice(0, 5)
+                                .map(option => `
+                                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #f8fafc; border-radius: 8px; margin-bottom: 8px;">
+                                        <div>
+                                            <div style="font-weight: 600;">${option.day}</div>
+                                            <div style="font-size: 14px; color: #6b7280;">${option.time}</div>
+                                        </div>
+                                        <div style="text-align: right;">
+                                            <div style="font-weight: 700; color: #dc2626; font-size: 18px;">${option.percentage}%</div>
+                                            <div class="progress-bar" style="width: 100px; margin-top: 4px;">
+                                                <div class="progress-fill" style="width: ${option.percentage}%; background: #dc2626;"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                        </div>
+                        
+                        <div style="background: #f0fdf4; border: 1px solid #10b981; border-radius: 12px; padding: 16px;">
+                            <div style="font-weight: 600; color: #166534; margin-bottom: 8px;">✅ Recommended Meeting Time</div>
+                            <div style="color: #166534;">
+                                ${mockVoteOptions.reduce((max, option) => option.percentage > max.percentage ? option : max).day} 
+                                ${mockVoteOptions.reduce((max, option) => option.percentage > max.percentage ? option : max).time}
+                                (${mockVoteOptions.reduce((max, option) => option.percentage > max.percentage ? option : max).percentage}% team agreement)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(resultsModal);
         }
 
         // Time selection helper functions
@@ -2071,19 +2550,41 @@
             const totalCount = mockTasks.length;
             const progress = Math.round((completedCount / totalCount) * 100);
             
-            // Update progress ring in header
-            document.getElementById('progressRing').textContent = progress + '%';
+            // Update progress ring in header with dynamic color
+            const progressRing = document.getElementById('progressRing');
+            progressRing.textContent = progress + '%';
+            
+            // Update progress ring color based on completion
+            let ringColor = '#dc2626'; // Red (0-33%)
+            if (progress >= 67) {
+                ringColor = '#10b981'; // Green (67-100%)
+            } else if (progress >= 34) {
+                ringColor = '#f59e0b'; // Yellow (34-66%)
+            }
+            
+            const progressDegrees = (progress / 100) * 360;
+            progressRing.style.background = `conic-gradient(${ringColor} 0deg ${progressDegrees}deg, #e5e7eb ${progressDegrees}deg 360deg)`;
             
             // Update progress section in dashboard
             const progressStats = document.querySelector('.progress-stats span:last-child');
             if (progressStats) {
-                progressStats.textContent = `${completedCount} of ${totalCount} tasks`;
+                progressStats.textContent = `${completedCount} of ${totalCount} tasks completed`;
             }
             
             const progressFill = document.querySelector('.progress-section .progress-fill');
             if (progressFill) {
                 progressFill.style.width = progress + '%';
             }
+            
+            // Update profile information
+            updateProfileDisplay();
+        }
+        
+        function updateProfileDisplay() {
+            // Update profile view with current user info
+            document.getElementById('profileName').textContent = currentUserInfo.name;
+            document.getElementById('profileStudentId').textContent = currentUserInfo.studentId;
+            document.getElementById('profileEmail').textContent = currentUserInfo.email;
         }
 
         // TA Functions
@@ -2253,8 +2754,7 @@
                             </div>
                             <div class="form-group">
                                 <label class="form-label">Grade (0-100)</label>
-                                <input type="range" class="grade-slider" min="0" max="100" value="85" oninput="updateGradeDisplay(this, ${item.id})" id="slider-${item.id}">
-                                <div style="text-align: center; font-weight: 600; color: #dc2626;" id="grade-${item.id}">85</div>
+                                <input type="number" class="form-input" min="0" max="100" value="85" placeholder="Enter grade (0-100)" id="grade-input-${item.id}" style="text-align: center; font-weight: 600; font-size: 18px;">
                             </div>
                             <div class="form-group">
                                 <label class="form-label">Feedback</label>
@@ -2271,15 +2771,236 @@
         }
 
         function filterSubmissions(taskFilter) {
-            showToast(`Filtering by: ${taskFilter}`, 'info');
+            const container = document.getElementById('submissionsList');
+            let filteredSubmissions = submissionsData;
+            
+            if (taskFilter !== 'all') {
+                filteredSubmissions = submissionsData.filter(sub => 
+                    sub.task.toLowerCase().includes(taskFilter.toLowerCase().replace('-', ' '))
+                );
+            }
+            
+            // Re-render with filtered data
+            container.innerHTML = filteredSubmissions.map(sub => `
+                <div class="task-card">
+                    <div class="flex-between">
+                        <div>
+                            <div class="task-name">${sub.student}</div>
+                            <div class="task-location">📋 ${sub.task}</div>
+                            <div style="font-size: 14px; color: #6b7280; margin-top: 4px;">Submitted: ${sub.submitted}</div>
+                        </div>
+                        <div style="text-align: right;">
+                            ${sub.status === 'pending' ? '<span class="status-badge status-pending">⏳ Pending Review</span>' : 
+                              sub.status === 'graded' ? `<span class="status-badge status-completed">✓ Graded (${sub.grade})</span>` :
+                              '<span class="status-badge" style="background: #fecaca; color: #991b1b;">⚠️ Needs Revision</span>'}
+                            <div style="margin-top: 8px;">
+                                ${sub.photo ? '📷 Photo included' : '❌ No photo'}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-actions" style="margin-top: 16px;">
+                        <button class="btn btn-secondary" onclick="reviewSubmission(${sub.id})">📝 Review</button>
+                        ${sub.status === 'pending' ? '<button class="btn btn-primary" onclick="gradeSubmission(' + sub.id + ')">✅ Grade</button>' : ''}
+                    </div>
+                </div>
+            `).join('');
+            
+            showToast(`Showing ${filteredSubmissions.length} submissions for: ${taskFilter === 'all' ? 'All Tasks' : taskFilter}`, 'info');
         }
 
         function filterByStatus(statusFilter) {
-            showToast(`Filtering by status: ${statusFilter}`, 'info');
+            const container = document.getElementById('submissionsList');
+            let filteredSubmissions = submissionsData;
+            
+            if (statusFilter !== 'all') {
+                filteredSubmissions = submissionsData.filter(sub => sub.status === statusFilter);
+            }
+            
+            // Re-render with filtered data
+            container.innerHTML = filteredSubmissions.map(sub => `
+                <div class="task-card">
+                    <div class="flex-between">
+                        <div>
+                            <div class="task-name">${sub.student}</div>
+                            <div class="task-location">📋 ${sub.task}</div>
+                            <div style="font-size: 14px; color: #6b7280; margin-top: 4px;">Submitted: ${sub.submitted}</div>
+                        </div>
+                        <div style="text-align: right;">
+                            ${sub.status === 'pending' ? '<span class="status-badge status-pending">⏳ Pending Review</span>' : 
+                              sub.status === 'graded' ? `<span class="status-badge status-completed">✓ Graded (${sub.grade})</span>` :
+                              '<span class="status-badge" style="background: #fecaca; color: #991b1b;">⚠️ Needs Revision</span>'}
+                            <div style="margin-top: 8px;">
+                                ${sub.photo ? '📷 Photo included' : '❌ No photo'}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-actions" style="margin-top: 16px;">
+                        <button class="btn btn-secondary" onclick="reviewSubmission(${sub.id})">📝 Review</button>
+                        ${sub.status === 'pending' ? '<button class="btn btn-primary" onclick="gradeSubmission(' + sub.id + ')">✅ Grade</button>' : ''}
+                    </div>
+                </div>
+            `).join('');
+            
+            const statusLabels = {
+                'all': 'All Statuses',
+                'pending': 'Pending Review',
+                'graded': 'Graded',
+                'needs-revision': 'Needs Revision'
+            };
+            
+            showToast(`Showing ${filteredSubmissions.length} submissions with status: ${statusLabels[statusFilter]}`, 'info');
         }
 
         function reviewSubmission(id) {
-            showToast('Opening submission review...', 'info');
+            const submission = submissionsData.find(sub => sub.id === id);
+            if (!submission) return;
+            
+            // Create detailed review modal
+            const reviewModal = document.createElement('div');
+            reviewModal.className = 'modal active';
+            reviewModal.innerHTML = `
+                <div class="modal-content" style="max-width: 700px;">
+                    <div class="modal-header">
+                        <div class="modal-title">📝 Review Submission</div>
+                        <button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <div class="card" style="margin-bottom: 20px;">
+                            <div class="card-title">${submission.student}</div>
+                            <div class="card-subtitle">${submission.task} • Submitted: ${submission.submitted}</div>
+                            <div class="card-content">
+                                <div style="margin: 16px 0;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                        <strong>Status:</strong>
+                                        ${submission.status === 'pending' ? '<span class="status-badge status-pending">⏳ Pending Review</span>' : 
+                                          submission.status === 'graded' ? `<span class="status-badge status-completed">✓ Graded (${submission.grade})</span>` :
+                                          '<span class="status-badge" style="background: #fecaca; color: #991b1b;">⚠️ Needs Revision</span>'}
+                                    </div>
+                                    
+                                    <div style="margin: 12px 0;">
+                                        <strong>Photo Submission:</strong>
+                                        <div style="background: #f8fafc; border-radius: 8px; padding: 20px; text-align: center; color: #6b7280; margin: 8px 0;">
+                                            ${submission.photo ? '📷 Student photo would be displayed here for review' : '❌ No photo submitted'}
+                                        </div>
+                                    </div>
+                                    
+                                    <div style="margin: 12px 0;">
+                                        <strong>Student Description:</strong>
+                                        <div style="background: #f8fafc; border-radius: 8px; padding: 16px; margin: 8px 0; line-height: 1.5;">
+                                            ${submission.description}
+                                        </div>
+                                    </div>
+                                    
+                                    ${submission.feedback ? `
+                                        <div style="margin: 12px 0;">
+                                            <strong>Previous Feedback:</strong>
+                                            <div style="background: #fef3c7; border-radius: 8px; padding: 16px; margin: 8px 0; line-height: 1.5; border: 1px solid #f59e0b;">
+                                                ${submission.feedback}
+                                            </div>
+                                        </div>
+                                    ` : ''}
+                                    
+                                    ${submission.gradedAt ? `
+                                        <div style="margin: 12px 0;">
+                                            <strong>Graded:</strong>
+                                            <span style="color: #6b7280;">${new Date(submission.gradedAt).toLocaleString()}</span>
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; gap: 16px; justify-content: center;">
+                            ${submission.status === 'pending' ? `
+                                <button class="btn btn-primary" onclick="gradeSubmission(${submission.id}); this.closest('.modal').remove();">
+                                    ✅ Grade This Submission
+                                </button>
+                                <button class="btn btn-secondary" onclick="requestRevisionFromReview(${submission.id}); this.closest('.modal').remove();">
+                                    📝 Request Revision
+                                </button>
+                            ` : `
+                                <button class="btn btn-secondary" onclick="this.closest('.modal').remove();">
+                                    ✓ Close Review
+                                </button>
+                                ${submission.status === 'graded' ? `
+                                    <button class="btn btn-secondary" onclick="editGrade(${submission.id}); this.closest('.modal').remove();">
+                                        ✏️ Edit Grade
+                                    </button>
+                                ` : ''}
+                            `}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(reviewModal);
+        }
+
+        function requestRevisionFromReview(id) {
+            const submission = submissionsData.find(sub => sub.id === id);
+            if (!submission) return;
+            
+            // Create quick feedback modal
+            const feedbackModal = document.createElement('div');
+            feedbackModal.className = 'modal active';
+            feedbackModal.innerHTML = `
+                <div class="modal-content" style="max-width: 500px;">
+                    <div class="modal-header">
+                        <div class="modal-title">📝 Request Revision</div>
+                        <button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 12px; padding: 16px; margin-bottom: 20px;">
+                            <div style="font-weight: 600; color: #92400e; margin-bottom: 8px;">Student: ${submission.student}</div>
+                            <div style="color: #92400e;">Task: ${submission.task}</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Revision Feedback</label>
+                            <textarea class="form-input" rows="4" id="revisionFeedback" placeholder="Explain what needs to be revised and provide specific guidance..."></textarea>
+                        </div>
+                        
+                        <div style="display: flex; gap: 16px;">
+                            <button class="btn btn-secondary" onclick="this.closest('.modal').remove()" style="flex: 1;">
+                                Cancel
+                            </button>
+                            <button class="btn btn-primary" onclick="submitRevisionRequest(${id})" style="flex: 1;">
+                                📝 Send Revision Request
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(feedbackModal);
+        }
+
+        function submitRevisionRequest(id) {
+            const feedback = document.getElementById('revisionFeedback').value.trim();
+            if (!feedback) {
+                showToast('Please provide feedback for the revision request', 'error');
+                return;
+            }
+            
+            const submission = submissionsData.find(sub => sub.id === id);
+            if (submission) {
+                submission.status = 'needs-revision';
+                submission.feedback = feedback;
+                submission.reviewedAt = new Date().toISOString();
+                
+                // Close modal and refresh views
+                document.querySelector('.modal.active').remove();
+                populateSubmissions();
+                populateGradingQueue();
+                
+                showToast(`Revision requested for ${submission.student}`, 'info');
+            }
+        }
+
+        function editGrade(id) {
+            gradeSubmission(id);
         }
 
         function gradeSubmission(id) {
@@ -2304,8 +3025,7 @@
             `;
             
             // Reset form
-            document.getElementById('gradeSlider').value = currentGradingSubmission.grade || 85;
-            document.getElementById('gradeValue').textContent = currentGradingSubmission.grade || 85;
+            document.getElementById('gradeInput').value = currentGradingSubmission.grade || 85;
             document.getElementById('gradeFeedback').value = '';
             
             showModal('gradeSubmissionModal');
@@ -2333,8 +3053,15 @@
         function submitGradeFromModal() {
             if (!currentGradingSubmission) return;
             
-            const grade = parseInt(document.getElementById('gradeSlider').value);
+            const gradeInput = document.getElementById('gradeInput');
+            const grade = parseInt(gradeInput.value);
             const feedback = document.getElementById('gradeFeedback').value.trim();
+            
+            if (isNaN(grade) || grade < 0 || grade > 100) {
+                showToast('Please enter a valid grade between 0 and 100', 'error');
+                gradeInput.focus();
+                return;
+            }
             
             if (!feedback) {
                 showToast('Please provide feedback for the student', 'error');
@@ -2401,6 +3128,95 @@
                     `).join('')}
                 </div>
             `;
+        }
+
+        function createStudentTeam() {
+            const teamName = document.getElementById('studentTeamName').value.trim();
+            const teamDescription = document.getElementById('studentTeamDescription').value.trim();
+            const maxMembers = parseInt(document.getElementById('studentMaxMembers').value);
+            const privacy = document.querySelector('input[name="teamPrivacy"]:checked').value;
+            
+            if (!teamName) {
+                showToast('Please enter a team name', 'error');
+                return;
+            }
+            
+            // Check if team name already exists
+            const existingTeam = availableTeamsData.find(team => 
+                team.name.toLowerCase() === teamName.toLowerCase()
+            );
+            
+            if (existingTeam) {
+                showToast('A team with this name already exists. Please choose a different name.', 'error');
+                return;
+            }
+            
+            // Create new team with current user as leader
+            const teamColor = getRandomTeamColor();
+            const newTeam = {
+                id: availableTeamsData.length + 1,
+                name: teamName,
+                description: teamDescription,
+                color: teamColor,
+                colorDark: getRandomTeamColorDark(teamColor),
+                maxMembers: maxMembers,
+                privacy: privacy,
+                createdBy: currentUserInfo.name,
+                members: [{
+                    name: currentUserInfo.name,
+                    initials: currentUserInfo.initials,
+                    role: "Team Leader",
+                    isCurrentUser: true
+                }]
+            };
+            
+            // Add to available teams
+            availableTeamsData.push(newTeam);
+            
+            // Set user as joined to this team
+            hasJoinedTeam = true;
+            userTeamInfo = {
+                id: newTeam.id,
+                name: newTeam.name,
+                members: newTeam.members,
+                joinedAt: new Date().toISOString(),
+                isLeader: true
+            };
+            
+            closeModal('createStudentTeamModal');
+            
+            // Clear form
+            document.getElementById('studentTeamName').value = '';
+            document.getElementById('studentTeamDescription').value = '';
+            document.querySelector('input[name="teamPrivacy"][value="open"]').checked = true;
+            
+            // Update team view
+            updateTeamViewState();
+            showToast(`Team "${teamName}" created successfully! You are now the team leader.`, 'success');
+            
+            // Update task detail view if currently viewing a task
+            if (currentTask) {
+                updateTaskDetailMembers();
+            }
+        }
+
+        function getRandomTeamColor() {
+            const colors = ['dc2626', '10b981', '3b82f6', 'f59e0b', '8b5cf6', 'ef4444', '06b6d4', 'f97316'];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        function getRandomTeamColorDark(lightColor) {
+            const colorMap = {
+                'dc2626': 'b91c1c',
+                '10b981': '059669',
+                '3b82f6': '2563eb',
+                'f59e0b': 'd97706',
+                '8b5cf6': '7c3aed',
+                'ef4444': 'dc2626',
+                '06b6d4': '0891b2',
+                'f97316': 'ea580c'
+            };
+            return colorMap[lightColor] || 'b91c1c';
         }
 
         function createNewTeam() {
@@ -2585,6 +3401,211 @@
             showToast('Team data exported successfully!', 'success');
         }
 
+        function sendTeamInvitation() {
+            const studentInput = document.getElementById('inviteStudentInput').value.trim();
+            const message = document.getElementById('inviteMessage').value.trim();
+            
+            if (!studentInput) {
+                showToast('Please enter a student name or email address', 'error');
+                return;
+            }
+            
+            if (!userTeamInfo || !userTeamInfo.isLeader) {
+                showToast('Only team leaders can send invitations', 'error');
+                return;
+            }
+            
+            if (userTeamInfo.members.length >= userTeamInfo.maxMembers) {
+                showToast('Your team is already at maximum capacity', 'error');
+                return;
+            }
+            
+            // Simulate sending invitation
+            closeModal('inviteStudentModal');
+            
+            // Clear form
+            document.getElementById('inviteStudentInput').value = '';
+            document.getElementById('inviteMessage').value = '';
+            
+            showToast(`Invitation sent to ${studentInput}! They will receive an email notification.`, 'success');
+        }
+
+        function removeMemberFromTeam(memberName) {
+            if (!userTeamInfo || !userTeamInfo.isLeader) {
+                showToast('Only team leaders can remove members', 'error');
+                return;
+            }
+            
+            // Find and remove member from team
+            const memberIndex = userTeamInfo.members.findIndex(member => member.name === memberName);
+            if (memberIndex > -1) {
+                userTeamInfo.members.splice(memberIndex, 1);
+                
+                // Update the team in availableTeamsData
+                const team = availableTeamsData.find(t => t.id === userTeamInfo.id);
+                if (team) {
+                    team.members = userTeamInfo.members;
+                }
+                
+                // Refresh team view
+                updateTeamViewState();
+                showToast(`${memberName} has been removed from the team`, 'info');
+            }
+        }
+
+        function editTeamSettings() {
+            if (!userTeamInfo || !userTeamInfo.isLeader) {
+                showToast('Only team leaders can edit team settings', 'error');
+                return;
+            }
+            
+            // Create team settings modal
+            const settingsModal = document.createElement('div');
+            settingsModal.className = 'modal active';
+            settingsModal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="modal-title">Team Settings</div>
+                        <button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Team Name</label>
+                        <input type="text" class="form-input" id="editTeamNameInput" value="${userTeamInfo.name}">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Team Description</label>
+                        <textarea class="form-input" rows="3" id="editTeamDescInput" placeholder="Describe your team...">${userTeamInfo.description || ''}</textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Maximum Team Size</label>
+                        <select class="form-input" id="editMaxMembersInput">
+                            <option value="3" ${userTeamInfo.maxMembers === 3 ? 'selected' : ''}>3 members</option>
+                            <option value="4" ${userTeamInfo.maxMembers === 4 ? 'selected' : ''}>4 members</option>
+                            <option value="5" ${userTeamInfo.maxMembers === 5 ? 'selected' : ''}>5 members</option>
+                        </select>
+                    </div>
+                    
+                    <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 12px; padding: 16px; margin: 20px 0;">
+                        <div style="font-weight: 600; color: #92400e; margin-bottom: 8px;">⚠️ Danger Zone</div>
+                        <button class="btn btn-secondary" onclick="disbandTeam()" style="color: #dc2626; width: 100%;">
+                            🗑️ Disband Team
+                        </button>
+                        <div style="font-size: 12px; color: #92400e; margin-top: 8px;">This will permanently delete the team and remove all members</div>
+                    </div>
+                    
+                    <div class="flex gap-16">
+                        <button class="btn btn-secondary" onclick="this.closest('.modal').remove()" style="flex: 1;">
+                            Cancel
+                        </button>
+                        <button class="btn btn-primary" onclick="saveTeamSettings()" style="flex: 1;">
+                            Save Changes
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(settingsModal);
+        }
+
+        function saveTeamSettings() {
+            const newName = document.getElementById('editTeamNameInput').value.trim();
+            const newDescription = document.getElementById('editTeamDescInput').value.trim();
+            const newMaxMembers = parseInt(document.getElementById('editMaxMembersInput').value);
+            
+            if (!newName) {
+                showToast('Please enter a team name', 'error');
+                return;
+            }
+            
+            // Check if new max members is less than current members
+            if (newMaxMembers < userTeamInfo.members.length) {
+                showToast(`Cannot reduce team size below current member count (${userTeamInfo.members.length})`, 'error');
+                return;
+            }
+            
+            // Update team info
+            userTeamInfo.name = newName;
+            userTeamInfo.description = newDescription;
+            userTeamInfo.maxMembers = newMaxMembers;
+            
+            // Update in availableTeamsData
+            const team = availableTeamsData.find(t => t.id === userTeamInfo.id);
+            if (team) {
+                team.name = newName;
+                team.description = newDescription;
+                team.maxMembers = newMaxMembers;
+            }
+            
+            // Close modal and refresh view
+            document.querySelector('.modal.active').remove();
+            updateTeamViewState();
+            showToast('Team settings updated successfully!', 'success');
+        }
+
+        function disbandTeam() {
+            if (!userTeamInfo || !userTeamInfo.isLeader) {
+                showToast('Only team leaders can disband teams', 'error');
+                return;
+            }
+            
+            // Create confirmation modal
+            const confirmModal = document.createElement('div');
+            confirmModal.className = 'modal active';
+            confirmModal.innerHTML = `
+                <div class="modal-content" style="max-width: 400px;">
+                    <div class="modal-header">
+                        <div class="modal-title">⚠️ Confirm Team Disbandment</div>
+                        <button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <div style="background: #fef2f2; border: 1px solid #ef4444; border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+                            <div style="font-weight: 600; color: #dc2626; margin-bottom: 8px;">This action cannot be undone!</div>
+                            <div style="color: #dc2626; font-size: 14px;">Disbanding "${userTeamInfo.name}" will:</div>
+                            <ul style="margin: 8px 0; padding-left: 20px; color: #dc2626; font-size: 14px;">
+                                <li>Remove all team members</li>
+                                <li>Delete the team permanently</li>
+                                <li>Allow members to join other teams</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="flex gap-16">
+                            <button class="btn btn-secondary" onclick="this.closest('.modal').remove()" style="flex: 1;">
+                                Cancel
+                            </button>
+                            <button class="btn btn-primary" onclick="confirmDisbandTeam()" style="flex: 1; background: #dc2626;">
+                                🗑️ Disband Team
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(confirmModal);
+        }
+
+        function confirmDisbandTeam() {
+            // Remove team from availableTeamsData
+            const teamIndex = availableTeamsData.findIndex(t => t.id === userTeamInfo.id);
+            if (teamIndex > -1) {
+                availableTeamsData.splice(teamIndex, 1);
+            }
+            
+            // Reset user team state
+            hasJoinedTeam = false;
+            userTeamInfo = null;
+            
+            // Close all modals and update view
+            document.querySelectorAll('.modal.active').forEach(modal => modal.remove());
+            updateTeamViewState();
+            populateTeamMembers();
+            
+            showToast('Team has been disbanded. All members can now join other teams.', 'info');
+        }
+
         function viewTeamDetails(teamId) {
             const team = teamsData.find(t => t.id === teamId);
             if (!team) return;
@@ -2592,15 +3613,7 @@
             showToast(`Viewing details for ${team.name} - ${team.members.length} members, ${team.completion}% complete`, 'info');
         }
 
-        function updateGradeDisplay(slider, id) {
-            document.getElementById(`grade-${id}`).textContent = slider.value;
-        }
 
-        function updateGradeValue() {
-            const slider = document.getElementById('gradeSlider');
-            const display = document.getElementById('gradeValue');
-            display.textContent = slider.value;
-        }
 
         function requestRevision(id) {
             const submission = submissionsData.find(sub => sub.id === id);
@@ -2626,8 +3639,15 @@
         function submitGrade(id) {
             const submission = submissionsData.find(sub => sub.id === id);
             if (submission) {
-                const grade = parseInt(document.querySelector(`#grade-${id}`).textContent);
+                const gradeInput = document.getElementById(`grade-input-${id}`);
+                const grade = parseInt(gradeInput.value);
                 const feedback = document.getElementById(`feedback-${id}`).value.trim();
+                
+                if (isNaN(grade) || grade < 0 || grade > 100) {
+                    showToast('Please enter a valid grade between 0 and 100', 'error');
+                    gradeInput.focus();
+                    return;
+                }
                 
                 if (!feedback) {
                     showToast('Please provide feedback for the student', 'error');
@@ -3016,6 +4036,43 @@
             document.body.removeChild(textArea);
         }
 
+        function showCompletionCelebration() {
+            // Create celebration modal
+            const celebrationModal = document.createElement('div');
+            celebrationModal.className = 'modal active';
+            celebrationModal.innerHTML = `
+                <div class="modal-content" style="max-width: 500px; text-align: center;">
+                    <div style="font-size: 80px; margin-bottom: 20px; animation: bounce 1s infinite;">🎉</div>
+                    <div style="font-size: 32px; font-weight: 700; color: #10b981; margin-bottom: 16px;">
+                        Congratulations!
+                    </div>
+                    <div style="font-size: 20px; color: #374151; margin-bottom: 24px;">
+                        You've completed all scavenger hunt tasks!
+                    </div>
+                    <div style="background: #f0fdf4; border: 2px solid #10b981; border-radius: 16px; padding: 24px; margin-bottom: 24px;">
+                        <div style="font-weight: 600; color: #166534; margin-bottom: 8px;">🏆 Hunt Complete!</div>
+                        <div style="color: #166534;">You've successfully explored the University of Alabama campus and completed all ${mockTasks.length} tasks.</div>
+                    </div>
+                    <button class="btn btn-primary btn-full" onclick="this.closest('.modal').remove()">
+                        🎊 Awesome!
+                    </button>
+                </div>
+            `;
+            
+            // Add bounce animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes bounce {
+                    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+                    40% { transform: translateY(-10px); }
+                    60% { transform: translateY(-5px); }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            document.body.appendChild(celebrationModal);
+        }
+
         function showToast(message, type = 'info') {
             const colors = {
                 success: '#10b981',
@@ -3059,5 +4116,5 @@
         // Initialize
         document.addEventListener('DOMContentLoaded', initApp);
     </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99aea1ecd20353bc',t:'MTc2MjUzNzQwMi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99fc0eef607ec01a',t:'MTc2MzM0OTI3MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
